@@ -1,30 +1,18 @@
 import FLOAT from "../FLOAT.cdc"
+import FLOATVerifiers from "../FLOATVerifiers.cdc"
+import FlowToken from "../utility/FlowToken.cdc"
 
-pub fun main(account: Address): {UFix64: FLOATEventMetadata} {
+pub fun main(account: Address): [FLOATEventMetadata] {
   let floatEventCollection = getAccount(account).getCapability(FLOAT.FLOATEventsPublicPath)
                               .borrow<&FLOAT.FLOATEvents{FLOAT.FLOATEventsPublic}>()
                               ?? panic("Could not borrow the FLOAT Events Collection from the account.")
   let floatEvents: [UInt64] = floatEventCollection.getIDs() 
-  let returnVal: {UFix64: FLOATEventMetadata} = {}
+  let returnVal: [FLOATEventMetadata] = []
 
   for eventId in floatEvents {
     let event = floatEventCollection.borrowPublicEventRef(eventId: eventId) ?? panic("This event does not exist in the account")
-    let metadata = FLOATEventMetadata(
-      _claimable: event.claimable, 
-      _dateCreated: event.dateCreated, 
-      _description: event.description, 
-      _eventId: event.eventId, 
-      _extraMetadata: event.getExtraMetadata(), 
-      _groups: event.getGroups(), 
-      _host: event.host, 
-      _image: event.image, 
-      _name: event.name, 
-      _totalSupply: event.totalSupply, 
-      _transferrable: event.transferrable, 
-      _url: event.url, 
-      _verifiers: event.getVerifiers()
-    )
-    returnVal[event.dateCreated] = metadata
+    let metadata = FLOATEventMetadata(event)
+    returnVal.append(metadata)
   }
   return returnVal
 }
@@ -34,43 +22,86 @@ pub struct FLOATEventMetadata {
   pub let dateCreated: UFix64
   pub let description: String 
   pub let eventId: UInt64
-  pub let extraMetadata: {String: AnyStruct}
-  pub let groups: [String]
   pub let host: Address
+  pub let backImage: String?
   pub let image: String 
   pub let name: String
   pub let totalSupply: UInt64
   pub let transferrable: Bool
   pub let url: String
-  pub let verifiers: {String: [{FLOAT.IVerifier}]}
+  pub let verifiers: {String: AnyStruct}
+  pub let eventType: String
+  pub let price: UFix64?
+  pub let visibilityMode: String
+  pub let multipleClaim: Bool
 
-  init(
-      _claimable: Bool,
-      _dateCreated: UFix64,
-      _description: String, 
-      _eventId: UInt64,
-      _extraMetadata: {String: AnyStruct},
-      _groups: [String],
-      _host: Address, 
-      _image: String, 
-      _name: String,
-      _totalSupply: UInt64,
-      _transferrable: Bool,
-      _url: String,
-      _verifiers: {String: [{FLOAT.IVerifier}]}
-  ) {
-      self.claimable = _claimable
-      self.dateCreated = _dateCreated
-      self.description = _description
-      self.eventId = _eventId
-      self.extraMetadata = _extraMetadata
-      self.groups = _groups
-      self.host = _host
-      self.image = _image
-      self.name = _name
-      self.transferrable = _transferrable
-      self.totalSupply = _totalSupply
-      self.url = _url
-      self.verifiers = _verifiers
+  init(_ event: &FLOAT.FLOATEvent{FLOAT.FLOATEventPublic}) {
+      self.claimable = event.claimable
+      self.dateCreated = event.dateCreated
+      self.description = event.description
+      self.eventId = event.eventId
+      let extraMetadata = event.getExtraMetadata()
+      self.host = event.host
+      if let backImage = FLOAT.extraMetadataToStrOpt(extraMetadata, "backImage") {
+        self.backImage = "https://ipfs.io/ipfs/".concat(backImage)
+      } else {
+        self.backImage = nil
+      }
+      self.image = "https://ipfs.io/ipfs/".concat(event.image)
+      self.name = event.name
+      self.transferrable = event.transferrable
+      self.totalSupply = event.totalSupply
+      self.url = event.url
+      let verifiers = event.getVerifiers()
+      self.verifiers = {}
+      if let timelock = verifiers[Type<FLOATVerifiers.Timelock>().identifier] {
+        if timelock.length > 0 {
+          let castedT = timelock[0] as! FLOATVerifiers.Timelock
+          self.verifiers["timelock"] = {
+            "type": "timelock",
+            "dateStart": castedT.dateStart,
+            "dateEnding": castedT.dateEnding
+          }
+        }
+      }
+      if let minBalance = verifiers[Type<FLOATVerifiers.MinimumBalance>().identifier] {
+        if minBalance.length > 0 {
+          let castedM = minBalance[0] as! FLOATVerifiers.MinimumBalance
+          self.verifiers["minimumBalance"] = {
+            "type": "minimumBalance",
+            "amount": castedM.amount
+          }
+        }
+      }
+      if let secret = verifiers[Type<FLOATVerifiers.SecretV2>().identifier] {
+        if secret.length > 0 {
+          let castedS = secret[0] as! FLOATVerifiers.SecretV2
+          self.verifiers["secret"] = {
+            "type": "secret",
+            "secret": castedS.publicKey
+          }
+        }
+      }
+      if let limited = verifiers[Type<FLOATVerifiers.Limited>().identifier] {
+        if limited.length > 0 {
+          let castedL = limited[0] as! FLOATVerifiers.Limited
+          self.verifiers["limited"] = {
+            "type": "limited",
+            "capacity": castedL.capacity
+          }
+          self.verifiers["limited"] = limited[0]
+        }
+      }
+      self.eventType = FLOAT.extraMetadataToStrOpt(extraMetadata, "eventType") ?? "other"
+
+      if let prices = event.getPrices() {
+        let flowTokenVaultIdentifier = Type<@FlowToken.Vault>().identifier
+        self.price = prices[flowTokenVaultIdentifier]?.price
+      } else {
+        self.price = nil
+      }
+
+      self.visibilityMode = FLOAT.extraMetadataToStrOpt(extraMetadata, "visibilityMode") ?? "certificate"
+      self.multipleClaim = (extraMetadata["allowMultipleClaim"] as! Bool?) ?? false
   }
 }

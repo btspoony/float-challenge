@@ -11,7 +11,7 @@ transaction(eventId: UInt64) {
 
   execute {
     let floatEvent = self.FLOATEvents.borrowEventRef(eventId: eventId) ?? panic("This event does not exist.")
-    floatEvent.toggleTransferrable()
+    floatEvent.toggleVisibilityMode()
   }
 }
  

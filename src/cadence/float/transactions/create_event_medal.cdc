@@ -10,7 +10,7 @@ transaction(
   url: String, 
   logo: String,
   backImage: String,
-  certificateImage: String,
+  certificateImages: {String: String},
   transferrable: Bool,
   claimable: Bool, 
   eventType: String,
@@ -85,7 +85,9 @@ transaction(
     }
     extraMetadata["backImage"] = backImage
     extraMetadata["eventType"] = eventType
-    extraMetadata["certificateImage"] = certificateImage
+    for medalType in certificateImages.keys {
+      extraMetadata["certificateImage.".concat(medalType)] = certificateImages[medalType]
+    }
 
     self.FLOATEvents.createEvent(
       claimable: claimable, 

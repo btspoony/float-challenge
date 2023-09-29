@@ -2,14 +2,18 @@ import FLOAT from "../FLOAT.cdc"
 import FLOATVerifiers from "../FLOATVerifiers.cdc"
 import FlowToken from "../utility/FlowToken.cdc"
 
-pub fun main(account: Address, eventId: UInt64): FLOATEventMetadata {
-  let floatEventCollection = getAccount(account).getCapability(FLOAT.FLOATEventsPublicPath)
-                              .borrow<&FLOAT.FLOATEvents{FLOAT.FLOATEventsPublic}>()
-                              ?? panic("Could not borrow the FLOAT Events Collection from the account.")
+pub fun main(events: [UInt64], addresses: [Address]): [FLOATEventMetadata] {
+  let returnVal: [FLOATEventMetadata] = []
 
-  let event = floatEventCollection.borrowPublicEventRef(eventId: eventId) ?? panic("This event does not exist in the account")
-  let metadata = FLOATEventMetadata(event)
-  return metadata
+  for i, eventId in events {
+    let authAccount = getAuthAccount(addresses[i])
+    let floatEventCollection = authAccount.borrow<&FLOAT.FLOATEvents>(from: FLOAT.FLOATEventsStoragePath)
+                              ?? panic("Could not borrow the FLOAT Events Collection from the account.")
+    let event = floatEventCollection.borrowEventRef(eventId: eventId) ?? panic("This event does not exist in the account")
+    let metadata = FLOATEventMetadata(event)
+    returnVal.append(metadata)
+  }
+  return returnVal
 }
 
 pub struct FLOATEventMetadata {
@@ -88,6 +92,8 @@ pub struct FLOATEventMetadata {
         }
       }
       self.eventType = FLOAT.extraMetadataToStrOpt(extraMetadata, "eventType") ?? "other"
+      self.visibilityMode = FLOAT.extraMetadataToStrOpt(extraMetadata, "visibilityMode") ?? "certificate"
+      self.multipleClaim = (extraMetadata["allowMultipleClaim"] as! Bool?) ?? false
 
       if let prices = event.getPrices() {
         let flowTokenVaultIdentifier = Type<@FlowToken.Vault>().identifier
@@ -95,8 +101,5 @@ pub struct FLOATEventMetadata {
       } else {
         self.price = nil
       }
-
-      self.visibilityMode = FLOAT.extraMetadataToStrOpt(extraMetadata, "visibilityMode") ?? "certificate"
-      self.multipleClaim = (extraMetadata["allowMultipleClaim"] as! Bool?) ?? false
   }
 }

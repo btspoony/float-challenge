@@ -1,89 +1,139 @@
 {
 	"contracts": {
-		"EmeraldPass": {
-			"source": "./src/cadence/core-contracts/EmeraldPass.cdc",
+		"FCLCrypto": {
+			"source": "./src/cadence/utility/FCLCrypto.cdc",
 			"aliases": {
-				"mainnet": "0x6a07dbeb03167a13",
-				"testnet": "0x88b6d0be84df0918"
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
+		"FIND": {
+			"source": "./src/cadence/utility/FIND.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"mainnet": "097bafa4e0b48eef",
+				"testnet": "35717efbbce11c74"
 			}
 		},
 		"FLOAT": {
 			"source": "./src/cadence/float/FLOAT.cdc",
 			"aliases": {
-				"mainnet": "0x2d4c3caffbeab845",
-				"testnet": "0x0afe396ebc8eee65"
+				"emulator": "f8d6e0586b0a20c7"
 			}
 		},
 		"FLOATVerifiers": {
 			"source": "./src/cadence/float/FLOATVerifiers.cdc",
 			"aliases": {
-				"mainnet": "0x2d4c3caffbeab845",
-				"testnet": "0x0afe396ebc8eee65"
+				"emulator": "f8d6e0586b0a20c7"
 			}
 		},
-		"FUSD": {
-			"source": "./src/cadence/core-contracts/FUSD.cdc",
+		"FLOATIncinerator": {
+			"source": "./src/cadence/float/FLOATIncinerator.cdc",
 			"aliases": {
-				"mainnet": "0x3c5959b568896393",
-				"testnet": "0xe223d8a629e49c68"
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
+		"FindViews": {
+			"source": "./src/cadence/utility/FindViews.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"mainnet": "097bafa4e0b48eef",
+				"testnet": "35717efbbce11c74"
 			}
 		},
 		"FlowToken": {
-			"source": "./src/cadence/core-contracts/FlowToken.cdc",
+			"source": "./src/cadence/utility/FlowToken.cdc",
 			"aliases": {
-				"emulator": "0x0ae53cb6e3f42a79",
-				"mainnet": "0x1654653399040a61",
-				"testnet": "0x7e60df042a9c0868"
+				"emulator": "0ae53cb6e3f42a79",
+				"mainnet": "1654653399040a61",
+				"testnet": "7e60df042a9c0868"
 			}
 		},
 		"FungibleToken": {
-			"source": "./src/cadence/core-contracts/FungibleToken.cdc",
+			"source": "./src/cadence/utility/FungibleToken.cdc",
 			"aliases": {
-				"emulator": "0xee82856bf20e2aa6",
-				"mainnet": "0xf233dcee88fe0abe",
-				"testnet": "0x9a0766d93b6608b7"
+				"emulator": "ee82856bf20e2aa6",
+				"mainnet": "f233dcee88fe0abe",
+				"testnet": "9a0766d93b6608b7"
 			}
 		},
-		"GrantedAccountAccess": {
-			"source": "./src/cadence/sharedaccount/GrantedAccountAccess.cdc",
+		"EmeraldIdentity": {
+			"source": "./src/cadence/utility/EmeraldIdentity.cdc",
 			"aliases": {
-				"mainnet": "0x2d4c3caffbeab845",
-				"testnet": "0x0afe396ebc8eee65"
+				"emulator": "f8d6e0586b0a20c7",
+				"mainnet": "39e42c67cc851cfb",
+				"testnet": "4d47bf3ce5e4393f"
+			}
+		},
+		"EmeraldIdentityDapper": {
+			"source": "./src/cadence/utility/EmeraldIdentityDapper.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"mainnet": "39e42c67cc851cfb",
+				"testnet": "4d47bf3ce5e4393f"
+			}
+		},
+		"EmeraldIdentityLilico": {
+			"source": "./src/cadence/utility/EmeraldIdentityLilico.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7",
+				"mainnet": "39e42c67cc851cfb",
+				"testnet": "4d47bf3ce5e4393f"
 			}
 		},
 		"MetadataViews": {
-			"source": "./src/cadence/core-contracts/MetadataViews.cdc",
+			"source": "./src/cadence/utility/MetadataViews.cdc",
 			"aliases": {
-				"mainnet": "0x1d7e57aa55817448",
-				"testnet": "0x631e88ae7f1d7c20"
+				"emulator": "f8d6e0586b0a20c7",
+				"mainnet": "1d7e57aa55817448",
+				"testnet": "631e88ae7f1d7c20"
 			}
 		},
 		"NFTCatalog": {
-			"source": "./src/cadence/core-contracts/NFTCatalog.cdc",
+			"source": "./src/cadence/utility/NFTCatalog.cdc",
 			"aliases": {
-				"mainnet": "0x49a7cda3a1eecc29",
-				"testnet": "0x324c34e1c517e4db"
-			}
-		},
-		"NFTRetrieval": {
-			"source": "./src/cadence/core-contracts/NFTRetrieval.cdc",
-			"aliases": {
-				"mainnet": "0x49a7cda3a1eecc29",
-				"testnet": "0x324c34e1c517e4db"
+				"emulator": "f8d6e0586b0a20c7",
+				"mainnet": "49a7cda3a1eecc29",
+				"testnet": "324c34e1c517e4db"
 			}
 		},
 		"NonFungibleToken": {
-			"source": "./src/cadence/core-contracts/NonFungibleToken.cdc",
+			"source": "./src/cadence/utility/NonFungibleToken.cdc",
 			"aliases": {
-				"emulator": "0xf8d6e0586b0a20c7",
-				"mainnet": "0x1d7e57aa55817448",
-				"testnet": "0x631e88ae7f1d7c20"
+				"emulator": "f8d6e0586b0a20c7",
+				"mainnet": "1d7e57aa55817448",
+				"testnet": "631e88ae7f1d7c20"
 			}
 		},
-		"FLOATEventSeries": "./src/cadence/float-eventseries/FLOATEventSeries.cdc",
-		"FLOATEventSeriesGoals": "./src/cadence/float-eventseries/FLOATEventSeriesGoals.cdc",
-		"FLOATEventSeriesViews": "./src/cadence/float-eventseries/FLOATEventSeriesViews.cdc",
-		"FLOATTreasuryStrategies": "./src/cadence/float-eventseries/FLOATTreasuryStrategies.cdc"
+		"FLOATEventSeries": {
+			"source": "./src/cadence/float-eventseries/FLOATEventSeries.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
+		"FLOATEventSeriesGoals": {
+			"source": "./src/cadence/float-eventseries/FLOATEventSeriesGoals.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
+		"FLOATEventSeriesViews": {
+			"source": "./src/cadence/float-eventseries/FLOATEventSeriesViews.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
+		"FLOATTreasuryStrategies": {
+			"source": "./src/cadence/float-eventseries/FLOATTreasuryStrategies.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		},
+		"FLOATChallengeVerifiers": {
+			"source": "./src/cadence/float-eventseries/FLOATChallengeVerifiers.cdc",
+			"aliases": {
+				"emulator": "f8d6e0586b0a20c7"
+			}
+		}
 	},
 	"networks": {
 		"emulator": "127.0.0.1:3569",
@@ -114,12 +164,30 @@
 		}
 	},
 	"deployments": {
+		"emulator": {
+			"emulator-account": [
+				"EmeraldIdentity",
+				"EmeraldIdentityDapper",
+				"EmeraldIdentityLilico",
+				"FCLCrypto",
+				"FindViews",
+				"FIND",
+				"FLOAT",
+				"FLOATVerifiers",
+				"FLOATEventSeries",
+				"FLOATEventSeriesViews",
+				"FLOATEventSeriesGoals",
+				"FLOATTreasuryStrategies",
+				"FLOATChallengeVerifiers"
+			]
+		},
 		"testnet": {
 			"eventseries-admin-testnet": [
 				"FLOATEventSeries",
 				"FLOATEventSeriesViews",
 				"FLOATEventSeriesGoals",
-				"FLOATTreasuryStrategies"
+				"FLOATTreasuryStrategies",
+				"FLOATChallengeVerifiers"
 			]
 		},
 		"mainnet": {
@@ -127,7 +195,8 @@
 				"FLOATEventSeries",
 				"FLOATEventSeriesViews",
 				"FLOATEventSeriesGoals",
-				"FLOATTreasuryStrategies"
+				"FLOATTreasuryStrategies",
+				"FLOATChallengeVerifiers"
 			]
 		}
 	}

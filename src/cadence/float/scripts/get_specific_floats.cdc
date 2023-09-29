@@ -1,9 +1,9 @@
 import FLOAT from "../FLOAT.cdc"
-pub fun main(account: Address): [FLOATMetadata] {
+pub fun main(account: Address, ids: [UInt64]): [FLOATMetadata] {
   let floatCollection = getAccount(account).getCapability(FLOAT.FLOATCollectionPublicPath)
                         .borrow<&FLOAT.Collection{FLOAT.CollectionPublic}>()
                         ?? panic("Could not borrow the Collection from the account.")
-  let ids = floatCollection.getIDs()
+
   var returnVal: [FLOATMetadata] = []
   for id in ids {
     let nft: &FLOAT.NFT = floatCollection.borrowFLOAT(id: id)!
