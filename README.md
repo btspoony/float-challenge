@@ -1,6 +1,6 @@
 # FLOAT Challenge App for Emerald DAO's FLOAT
 
-This repo contains the source code for Emerald City's FLOAT
+This repo contains the source code for the FLOAT Challenge App
 
 ## Contracts
 
