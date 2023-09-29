@@ -1,4 +1,4 @@
-import FungibleToken from "../../core-contracts/FungibleToken.cdc"
+import "FungibleToken"
 
 pub struct TokenBalance {
   pub let identifier: String

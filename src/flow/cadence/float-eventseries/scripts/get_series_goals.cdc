@@ -1,5 +1,5 @@
-import FLOATEventSeries from "../FLOATEventSeries.cdc"
-import FLOATEventSeriesGoals from "../FLOATEventSeriesGoals.cdc"
+import "FLOATEventSeries"
+import "FLOATEventSeriesGoals"
 
 pub fun main(
   host: Address,

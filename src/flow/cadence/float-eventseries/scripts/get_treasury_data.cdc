@@ -1,7 +1,7 @@
-import NonFungibleToken from "../../core-contracts/NonFungibleToken.cdc"
-import FungibleToken from "../../core-contracts/FungibleToken.cdc"
-import FLOATEventSeries from "../FLOATEventSeries.cdc"
-import FLOATEventSeriesViews from "../FLOATEventSeriesViews.cdc"
+import "NonFungibleToken"
+import "FungibleToken"
+import "FLOATEventSeries"
+import "FLOATEventSeriesViews"
 
 pub fun main(
   host: Address,

@@ -1,4 +1,4 @@
-import FLOATEventSeries from "./FLOATEventSeries.cdc"
+import "FLOATEventSeries"
 
 pub contract FLOATTreasuryStrategies {
 

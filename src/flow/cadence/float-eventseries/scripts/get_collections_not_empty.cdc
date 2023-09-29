@@ -1,7 +1,7 @@
-import NonFungibleToken from "../../core-contracts/NonFungibleToken.cdc"
-import MetadataViews from "../../core-contracts/MetadataViews.cdc"
-import NFTCatalog from "../../core-contracts/NFTCatalog.cdc"
-import NFTRetrieval from "../../core-contracts/NFTRetrieval.cdc"
+import "NonFungibleToken"
+import "MetadataViews"
+import "NFTCatalog"
+import "NFTRetrieval"
 
 pub fun main(
   acct: Address

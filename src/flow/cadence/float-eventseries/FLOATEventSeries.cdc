@@ -2,10 +2,10 @@
 
 // This contract is for FLOAT EventSeries
 
-import NonFungibleToken from "../core-contracts/NonFungibleToken.cdc"
-import MetadataViews from "../core-contracts/MetadataViews.cdc"
-import FungibleToken from "../core-contracts/FungibleToken.cdc"
-import FLOAT from "../float/FLOAT.cdc"
+import "NonFungibleToken"
+import "MetadataViews"
+import "FungibleToken"
+import "FLOAT"
 
 pub contract FLOATEventSeries {
 

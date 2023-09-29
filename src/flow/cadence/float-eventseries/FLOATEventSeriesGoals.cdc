@@ -1,5 +1,5 @@
-import FLOAT from "../float/FLOAT.cdc"
-import FLOATEventSeries from "./FLOATEventSeries.cdc"
+import "FLOAT"
+import "FLOATEventSeries"
 
 pub contract FLOATEventSeriesGoals {
     /**    ____ _  _ _  _ ____ ___ _ ____ _  _ ____ _    _ ___ _   _

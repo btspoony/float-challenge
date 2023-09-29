@@ -20,9 +20,9 @@
 // of the secret code through. For Limited, we need to know the totalSupply of the event,
 // so we pass it through as well.
 
-import FLOAT from "./FLOAT.cdc"
-import FungibleToken from "./utility/FungibleToken.cdc"
-import FlowToken from "./utility/FlowToken.cdc"
+import "FLOAT"
+import "FungibleToken"
+import "FlowToken"
 
 pub contract FLOATVerifiers {
 

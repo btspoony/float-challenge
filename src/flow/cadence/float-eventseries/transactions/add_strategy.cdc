@@ -1,6 +1,6 @@
-import MetadataViews from "../../core-contracts/MetadataViews.cdc"
-import FLOATEventSeries from "../FLOATEventSeries.cdc"
-import FLOATTreasuryStrategies from "../FLOATTreasuryStrategies.cdc"
+import "MetadataViews"
+import "FLOATEventSeries"
+import "FLOATTreasuryStrategies"
 
 transaction(
   seriesId: UInt64,

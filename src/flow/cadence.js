@@ -83,6 +83,3 @@ export { default as scGetSeriesStrategies } from '../../cadence/float-eventserie
 export { default as scHasAchievementBoard } from '../../cadence/float-eventseries/scripts/has_achievement_board.cdc?raw'
 export { default as scGetAchievementRecords } from '../../cadence/float-eventseries/scripts/get_achievement_records.cdc?raw'
 export { default as scGetAndCheckEventSeriesGoals } from '../../cadence/float-eventseries/scripts/get_and_check_series_goals.cdc?raw'
-
-// export { default as scCanCreateNew } from '../../cadence/float-eventseries/scripts/can_create_new.cdc?raw'
-// export { default as scIsPassActive } from '../../cadence/float-eventseries/scripts/is_pass_active.cdc?raw'

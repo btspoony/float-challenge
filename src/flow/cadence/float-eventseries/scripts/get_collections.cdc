@@ -1,5 +1,5 @@
-import MetadataViews from "../../core-contracts/MetadataViews.cdc"
-import NFTCatalog from "../../core-contracts/NFTCatalog.cdc"
+import "MetadataViews"
+import "NFTCatalog"
 
 pub fun main(
   nftIdentifer: String?

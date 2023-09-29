@@ -1,8 +1,8 @@
-import FLOATEventSeries from "../FLOATEventSeries.cdc"
-import NonFungibleToken from "../../core-contracts/NonFungibleToken.cdc"
-import FungibleToken from "../../core-contracts/FungibleToken.cdc"
-import MetadataViews from "../../core-contracts/MetadataViews.cdc"
-import NFTCatalog from "../../core-contracts/NFTCatalog.cdc"
+import "FLOATEventSeries"
+import "NonFungibleToken"
+import "FungibleToken"
+import "MetadataViews"
+import "NFTCatalog"
 /**
 General placeholder for NFT and FT
 */ 

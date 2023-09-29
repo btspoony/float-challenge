@@ -18,11 +18,11 @@
 
 // For a whole list of verifiers, see FLOATVerifiers.cdc 
 
-import NonFungibleToken from "./utility/NonFungibleToken.cdc"
-import MetadataViews from "./utility/MetadataViews.cdc"
-import FungibleToken from "./utility/FungibleToken.cdc"
-import FlowToken from "./utility/FlowToken.cdc"
-import FindViews from "./utility/FindViews.cdc"
+import "NonFungibleToken"
+import "MetadataViews"
+import "FungibleToken"
+import "FlowToken"
+import "FindViews"
 
 pub contract FLOAT: NonFungibleToken {
 

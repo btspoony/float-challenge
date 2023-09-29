@@ -1,7 +1,7 @@
-import MetadataViews from "../../core-contracts/MetadataViews.cdc"
-import NonFungibleToken from "../../core-contracts/NonFungibleToken.cdc"
-import NFTCatalog from "../../core-contracts/NFTCatalog.cdc"
-import FLOATEventSeries from "../FLOATEventSeries.cdc"
+import "MetadataViews"
+import "NonFungibleToken"
+import "NFTCatalog"
+import "FLOATEventSeries"
 
 transaction(
   seriesId: UInt64,

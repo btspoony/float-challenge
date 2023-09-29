@@ -1,6 +1,6 @@
-import FLOAT from "../../float/FLOAT.cdc"
-import FLOATEventSeries from "../FLOATEventSeries.cdc"
-import FLOATEventSeriesGoals from "../FLOATEventSeriesGoals.cdc"
+import "FLOAT"
+import "FLOATEventSeries"
+import "FLOATEventSeriesGoals"
 
 pub fun main(
   accountAddr: Address,

@@ -1,6 +1,6 @@
-import MetadataViews from "../../core-contracts/MetadataViews.cdc"
-import FLOATEventSeries from "../FLOATEventSeries.cdc"
-import FLOATEventSeriesViews from "../FLOATEventSeriesViews.cdc"
+import "MetadataViews"
+import "FLOATEventSeries"
+import "FLOATEventSeriesViews"
 
 pub fun main(
   page: UInt64,

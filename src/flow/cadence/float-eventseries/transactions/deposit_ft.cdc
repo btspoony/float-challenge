@@ -1,6 +1,6 @@
-import MetadataViews from "../../core-contracts/MetadataViews.cdc"
-import FungibleToken from "../../core-contracts/FungibleToken.cdc"
-import FLOATEventSeries from "../FLOATEventSeries.cdc"
+import "MetadataViews"
+import "FungibleToken"
+import "FLOATEventSeries"
 
 transaction(
   seriesId: UInt64,

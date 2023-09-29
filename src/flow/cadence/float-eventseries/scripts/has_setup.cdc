@@ -1,4 +1,4 @@
-import FLOATEventSeries from "../FLOATEventSeries.cdc"
+import "FLOATEventSeries"
 
 pub fun main(accountAddr: Address): Bool {
   let acct = getAccount(accountAddr)
