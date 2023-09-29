@@ -1,6 +1,6 @@
 // MADE BY: Bohao Tang
 
-// This contract is for FLOAT Events Book
+// This contract is for FLOAT EventSeries
 
 import NonFungibleToken from "../core-contracts/NonFungibleToken.cdc"
 import MetadataViews from "../core-contracts/MetadataViews.cdc"
@@ -1498,7 +1498,7 @@ pub contract FLOATEventSeries {
                 for key in verifiers.keys {
                     // Length of "A.XXXXX." is 19
                     let contractName = key.slice(from: 19, upTo: key.length)
-                    if contractName == "FLOATVerifiers.ChallengeAchievementPoint" {
+                    if contractName == "FLOATChallengeVerifiers.ChallengeAchievementPoint" || contractName == "FLOATVerifiers.ChallengeAchievementPoint" {
                         isValid = true
                         break
                     }

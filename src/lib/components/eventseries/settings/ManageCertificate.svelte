@@ -39,7 +39,7 @@
     const validEvents = [];
     for (const one of eventObjects) {
       const anyCertVerifier = Object.keys(one.event?.verifiers ?? {}).find(
-        (key) => key.endsWith("FLOATVerifiers.ChallengeAchievementPoint")
+        (key) => key.endsWith("ChallengeAchievementPoint")
       );
       if (anyCertVerifier) {
         const verifier = one.event?.verifiers[anyCertVerifier][0];

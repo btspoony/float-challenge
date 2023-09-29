@@ -1,5 +1,7 @@
-import FLOAT from "./FLOAT.cdc"
-import FLOATEventSeries from "../float-eventseries/FLOATEventSeries.cdc"
+// MADE BY: Bohao Tang
+
+import FLOAT from "../float/FLOAT.cdc"
+import FLOATEventSeries from "./FLOATEventSeries.cdc"
 
 pub contract FLOATChallengeVerifiers {
     //

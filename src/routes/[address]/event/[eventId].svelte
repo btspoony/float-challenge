@@ -119,7 +119,7 @@
     challengeCertificateVerifier =
       data.verifiers[
         Object.keys(data.verifiers ?? {}).find((key) =>
-          key.endsWith("FLOATVerifiers.ChallengeAchievementPoint")
+          key.endsWith("ChallengeAchievementPoint")
         )
       ];
     let prices = data.extraMetadata["prices"];
