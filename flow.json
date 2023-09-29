@@ -1,0 +1,134 @@
+{
+	"contracts": {
+		"EmeraldPass": {
+			"source": "./src/cadence/core-contracts/EmeraldPass.cdc",
+			"aliases": {
+				"mainnet": "0x6a07dbeb03167a13",
+				"testnet": "0x88b6d0be84df0918"
+			}
+		},
+		"FLOAT": {
+			"source": "./src/cadence/float/FLOAT.cdc",
+			"aliases": {
+				"mainnet": "0x2d4c3caffbeab845",
+				"testnet": "0x0afe396ebc8eee65"
+			}
+		},
+		"FLOATVerifiers": {
+			"source": "./src/cadence/float/FLOATVerifiers.cdc",
+			"aliases": {
+				"mainnet": "0x2d4c3caffbeab845",
+				"testnet": "0x0afe396ebc8eee65"
+			}
+		},
+		"FUSD": {
+			"source": "./src/cadence/core-contracts/FUSD.cdc",
+			"aliases": {
+				"mainnet": "0x3c5959b568896393",
+				"testnet": "0xe223d8a629e49c68"
+			}
+		},
+		"FlowToken": {
+			"source": "./src/cadence/core-contracts/FlowToken.cdc",
+			"aliases": {
+				"emulator": "0x0ae53cb6e3f42a79",
+				"mainnet": "0x1654653399040a61",
+				"testnet": "0x7e60df042a9c0868"
+			}
+		},
+		"FungibleToken": {
+			"source": "./src/cadence/core-contracts/FungibleToken.cdc",
+			"aliases": {
+				"emulator": "0xee82856bf20e2aa6",
+				"mainnet": "0xf233dcee88fe0abe",
+				"testnet": "0x9a0766d93b6608b7"
+			}
+		},
+		"GrantedAccountAccess": {
+			"source": "./src/cadence/sharedaccount/GrantedAccountAccess.cdc",
+			"aliases": {
+				"mainnet": "0x2d4c3caffbeab845",
+				"testnet": "0x0afe396ebc8eee65"
+			}
+		},
+		"MetadataViews": {
+			"source": "./src/cadence/core-contracts/MetadataViews.cdc",
+			"aliases": {
+				"mainnet": "0x1d7e57aa55817448",
+				"testnet": "0x631e88ae7f1d7c20"
+			}
+		},
+		"NFTCatalog": {
+			"source": "./src/cadence/core-contracts/NFTCatalog.cdc",
+			"aliases": {
+				"mainnet": "0x49a7cda3a1eecc29",
+				"testnet": "0x324c34e1c517e4db"
+			}
+		},
+		"NFTRetrieval": {
+			"source": "./src/cadence/core-contracts/NFTRetrieval.cdc",
+			"aliases": {
+				"mainnet": "0x49a7cda3a1eecc29",
+				"testnet": "0x324c34e1c517e4db"
+			}
+		},
+		"NonFungibleToken": {
+			"source": "./src/cadence/core-contracts/NonFungibleToken.cdc",
+			"aliases": {
+				"emulator": "0xf8d6e0586b0a20c7",
+				"mainnet": "0x1d7e57aa55817448",
+				"testnet": "0x631e88ae7f1d7c20"
+			}
+		},
+		"FLOATEventSeries": "./src/cadence/float-eventseries/FLOATEventSeries.cdc",
+		"FLOATEventSeriesGoals": "./src/cadence/float-eventseries/FLOATEventSeriesGoals.cdc",
+		"FLOATEventSeriesViews": "./src/cadence/float-eventseries/FLOATEventSeriesViews.cdc",
+		"FLOATTreasuryStrategies": "./src/cadence/float-eventseries/FLOATTreasuryStrategies.cdc"
+	},
+	"networks": {
+		"emulator": "127.0.0.1:3569",
+		"mainnet": "access.mainnet.nodes.onflow.org:9000",
+		"testnet": "access.devnet.nodes.onflow.org:9000"
+	},
+	"accounts": {
+		"emulator-account": {
+			"address": "f8d6e0586b0a20c7",
+			"key": "0e70c2b6a753dfbfc5245f5d350f654dfd14679bf515079f3045d8e78dc39122"
+		},
+		"eventseries-admin-testnet": {
+			"address": "78ba14dd1c817ec7",
+			"key": {
+				"type": "file",
+				"location": "./flow-challenge-testnet.private.key"
+			}
+		},
+		"float-challenge": {
+			"address": "1dd5caae66e2c440",
+			"key": {
+				"type": "file",
+				"index": 0,
+				"signatureAlgorithm": "ECDSA_P256",
+				"hashAlgorithm": "SHA3_256",
+				"location": "./float-challenge.private.key"
+			}
+		}
+	},
+	"deployments": {
+		"testnet": {
+			"eventseries-admin-testnet": [
+				"FLOATEventSeries",
+				"FLOATEventSeriesViews",
+				"FLOATEventSeriesGoals",
+				"FLOATTreasuryStrategies"
+			]
+		},
+		"mainnet": {
+			"float-challenge": [
+				"FLOATEventSeries",
+				"FLOATEventSeriesViews",
+				"FLOATEventSeriesGoals",
+				"FLOATTreasuryStrategies"
+			]
+		}
+	}
+}
