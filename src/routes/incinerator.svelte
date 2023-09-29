@@ -4,12 +4,12 @@
   import Float from "$lib/components/Float.svelte";
   import Lantern from "$lib/components/Lantern.svelte";
   import { PAGE_TITLE_EXTENSION } from "$lib/constants";
-  import { getFLOATs, incinerate, authenticate } from "$lib/flow/actions";
+  import { getFLOATs, incinerate, authenticate } from "$flow/actions";
   import {
     user,
     incinerateInProgress,
     incinerateStatus,
-  } from "$lib/flow/stores";
+  } from "$flow/stores";
   import LibLoader from "$lib/components/LibLoader.svelte";
   import GraffleSDK from "$lib/graffle.js";
   import { onMount } from "svelte";

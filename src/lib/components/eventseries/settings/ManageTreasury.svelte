@@ -6,13 +6,13 @@
   import NftCollections from "$lib/components/common/NFTCollections.svelte";
   import NFTCollectionDisplay from "$lib/components/common/NFTCollectionDisplay.svelte";
   import { createEventDispatcher } from "svelte";
-  import { user, eventSeries as seriesStore } from "$lib/flow/stores";
+  import { user, eventSeries as seriesStore } from "$flow/stores";
   import {
     getTreasuryData,
     depositFungibleTokenToTreasury,
     depositNonFungibleTokenToTreasury,
     dropTreasury,
-  } from "$lib/flow/actions";
+  } from "$flow/actions";
 
   /** @type {import('../types').EventSeriesData} */
   export let eventSeries;

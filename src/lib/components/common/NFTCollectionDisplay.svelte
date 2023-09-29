@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher } from "svelte";
-  import { getCollectionInfo } from "$lib/flow/actions";
+  import { getCollectionInfo } from "$flow/actions";
 
   /** @type {import('../eventseries/types').CollectionInfo} */
   export let collection = null;

@@ -5,8 +5,8 @@
   import Loading from "$lib/components/common/Loading.svelte";
   import SeriesList from "$lib/components/eventseries/SeriesList.svelte";
   import { setContext } from "svelte";
-  import { user } from "$lib/flow/stores";
-  import { authenticate, getGlobalEventSeriesList } from "$lib/flow/actions";
+  import { user } from "$flow/stores";
+  import { authenticate, getGlobalEventSeriesList } from "$flow/actions";
 
   let page = 0;
   let pageIndex = 0;

@@ -5,8 +5,8 @@
   import Loading from "$lib/components/common/Loading.svelte";
   import FloatsTable from "$lib/components/common/table/FloatsTable.svelte";
   import Float from "$lib/components/Float.svelte";
-  import { getFLOATs } from "$lib/flow/actions.js";
-  import { user } from "$lib/flow/stores";
+  import { getFLOATs } from "$flow/actions.js";
+  import { user } from "$flow/stores";
 
   let floats = async () => {
     const floatsRaw = await getFLOATs(addressObject.address);

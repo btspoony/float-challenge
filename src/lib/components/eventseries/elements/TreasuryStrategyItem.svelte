@@ -6,8 +6,8 @@
     user,
     eventSeries as seriesStore,
     getLatestTokenList,
-  } from "$lib/flow/stores";
-  import { getCollectionInfo, claimTreasuryRewards } from "$lib/flow/actions";
+  } from "$flow/stores";
+  import { getCollectionInfo, claimTreasuryRewards } from "$flow/actions";
 
   /** @type {import('../types').EventSeriesData} */
   export let eventSeries;

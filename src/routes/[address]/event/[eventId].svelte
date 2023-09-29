@@ -1,7 +1,7 @@
 <script context="module">
   export const prerender = true;
 
-  import { getEvent, resolveAddressObject } from "$lib/flow/actions.js";
+  import { getEvent, resolveAddressObject } from "$flow/actions.js";
 
   export async function load({ url, params, stuff }) {
     // console.log('CONSOLE', params);
@@ -49,7 +49,7 @@
     deleteEventStatus,
     floatDistributingManyStatus,
     floatDistributingManyInProgress,
-  } from "$lib/flow/stores";
+  } from "$flow/stores";
   import { denylist } from "$lib/constants";
   import {
     toggleClaimable,
@@ -65,16 +65,16 @@
     getCurrentHolder,
     getFlowTokenBalance,
     getClaimedInEvent,
-  } from "$lib/flow/actions.js";
+  } from "$flow/actions.js";
   import IntersectionObserver from "svelte-intersection-observer";
   import Loading from "$lib/components/common/Loading.svelte";
   import Float from "$lib/components/Float.svelte";
   import ClaimsTable from "$lib/components/common/table/ClaimsTable.svelte";
   import ClaimButton from "$lib/components/ClaimButton.svelte";
-  import { getResolvedName } from "$lib/flow/utils";
+  import { getResolvedName } from "$flow/utils";
   import QrCode from "$lib/components/common/QRCode.svelte";
-  import { authenticate } from "$lib/flow/actions";
-  import { flowTokenIdentifier, verifiersIdentifier } from "$lib/flow/config";
+  import { authenticate } from "$flow/actions";
+  import { flowTokenIdentifier, verifiersIdentifier } from "$flow/config";
   import Papa from "papaparse";
 
   let claimsTableInView;

@@ -1,6 +1,6 @@
 <script>
-  import { resolveAddressObject } from "$lib/flow/actions";
-  import { getResolvedName } from "$lib/flow/utils";
+  import { resolveAddressObject } from "$flow/actions";
+  import { getResolvedName } from "$flow/utils";
 
   export let float = {};
   export let claimed = false;

@@ -1,8 +1,8 @@
 <script>
   import FungibleTokenDisplay from "./FungibleTokenDisplay.svelte";
   import { createEventDispatcher } from "svelte";
-  import { user, getLatestTokenList } from "$lib/flow/stores";
-  import { getTokenBalances } from "$lib/flow/actions";
+  import { user, getLatestTokenList } from "$flow/stores";
+  import { getTokenBalances } from "$flow/actions";
 
   /** @type {[{ identifier: string , balance: string }]} */
   export let balances = [];

@@ -1,12 +1,12 @@
 <script>
-  import { getGroups, createGroup } from "$lib/flow/actions";
+  import { getGroups, createGroup } from "$flow/actions";
   import { draftGroup } from "$lib/stores";
   import LibLoader from "../LibLoader.svelte";
   import { onMount } from "svelte";
   import Group from "../Group.svelte";
-  import { addGroupInProgress, addGroupStatus, user } from "$lib/flow/stores";
-  import { authenticate } from "$lib/flow/actions";
-  import { getResolvedName } from "$lib/flow/utils";
+  import { addGroupInProgress, addGroupStatus, user } from "$flow/stores";
+  import { authenticate } from "$flow/actions";
+  import { getResolvedName } from "$flow/utils";
   import { NFTStorage } from "nft.storage";
 
   const NFT_STORAGE_TOKEN = import.meta.env.VITE_NFT_STORAGE_ACCESS_TOKEN;

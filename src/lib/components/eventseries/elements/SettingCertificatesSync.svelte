@@ -2,8 +2,8 @@
   import { t } from "svelte-i18n";
   import EventCertificateItem from "./EventCertificateItem.svelte";
   import { createEventDispatcher } from "svelte";
-  import { user, eventSeries as seriesStore } from "$lib/flow/stores";
-  import { syncCertificateFloats } from "$lib/flow/actions";
+  import { user, eventSeries as seriesStore } from "$flow/stores";
+  import { syncCertificateFloats } from "$flow/actions";
 
   /** @type {import('../types').EventSeriesData} */
   export let eventSeries;

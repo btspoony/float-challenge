@@ -3,8 +3,8 @@
   import { createEventDispatcher } from "svelte";
   import EventItem from "$lib/components/eventseries/elements/EventItem.svelte";
   import DialogPickingEvents from "$lib/components/eventseries/DialogPickingEvents.svelte";
-  import { user, eventSeries as seriesStore } from "$lib/flow/stores";
-  import { updateEventseriesSlots } from "$lib/flow/actions";
+  import { user, eventSeries as seriesStore } from "$flow/stores";
+  import { updateEventseriesSlots } from "$flow/actions";
 
   // dispatcher
   const dispatch = createEventDispatcher();

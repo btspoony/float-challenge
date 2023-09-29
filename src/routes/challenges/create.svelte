@@ -1,7 +1,7 @@
 <script>
   import { t } from "svelte-i18n";
-  import { authenticate, createEventSeries } from "$lib/flow/actions";
-  import { user, eventSeries } from "$lib/flow/stores";
+  import { authenticate, createEventSeries } from "$flow/actions";
+  import { user, eventSeries } from "$flow/stores";
   import { PAGE_TITLE_EXTENSION } from "$lib/constants";
   import { notifications } from "$lib/notifications";
   import Loading from "$lib/components/common/Loading.svelte";

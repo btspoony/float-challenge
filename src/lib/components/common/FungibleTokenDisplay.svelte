@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher } from "svelte";
-  import { getLatestTokenList } from "$lib/flow/stores";
+  import { getLatestTokenList } from "$flow/stores";
 
   /** @type {import('flow-native-token-registry').TokenInfo} */
   export let token = undefined;

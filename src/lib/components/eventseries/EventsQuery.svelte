@@ -2,7 +2,7 @@
   import { t } from "svelte-i18n";
   import Loading from "$lib/components/common/Loading.svelte";
   import { createEventDispatcher } from "svelte";
-  import { getEvents, resolveAddressObject } from "$lib/flow/actions";
+  import { getEvents, resolveAddressObject } from "$flow/actions";
 
   export let opened = false;
 

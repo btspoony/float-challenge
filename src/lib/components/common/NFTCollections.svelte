@@ -1,8 +1,8 @@
 <script>
   import NftCollectionDisplay from "./NFTCollectionDisplay.svelte";
   import { createEventDispatcher } from "svelte";
-  import { user } from "$lib/flow/stores";
-  import { getCollectionsNotEmpty } from "$lib/flow/actions";
+  import { user } from "$flow/stores";
+  import { getCollectionsNotEmpty } from "$flow/actions";
 
   /** @type {[{ identifier: string , ids: string[] }]} */
   export let collections = [];

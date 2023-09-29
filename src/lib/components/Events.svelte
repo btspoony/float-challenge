@@ -2,8 +2,8 @@
   import Loading from "$lib/components/common/Loading.svelte";
   import Event from "$lib/components/Event.svelte";
   import EventsTable from "$lib/components/common/table/EventsTable.svelte";
-  import { getEvents } from "$lib/flow/actions.js";
-  import { user } from "$lib/flow/stores";
+  import { getEvents } from "$flow/actions.js";
+  import { user } from "$flow/stores";
   export let addressObject;
 
   let floatEvents = async () => {

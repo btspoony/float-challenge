@@ -1,5 +1,5 @@
 <script>
-  import { getStats, getIncineratedStats } from "$lib/flow/actions";
+  import { getStats, getIncineratedStats } from "$flow/actions";
   export let addition = 0;
   export let incinerator = false;
 </script>

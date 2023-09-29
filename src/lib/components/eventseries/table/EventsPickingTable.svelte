@@ -4,7 +4,7 @@
   //Sort component is optional
   import Table, { Row, Sort } from "../../common/table/Table.svelte";
   import { sortNumber, sortString } from "../../common/table/sorting.js";
-  import { formatter } from "$lib/flow/utils";
+  import { formatter } from "$flow/utils";
   import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();

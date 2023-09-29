@@ -5,7 +5,7 @@
   import Table, { Row, Sort } from "./Table.svelte";
   import { sortNumber } from "./sorting.js";
 
-  import { getHoldersInEvent } from "$lib/flow/actions.js";
+  import { getHoldersInEvent } from "$flow/actions.js";
 
   export let address = "";
   export let eventId = "";

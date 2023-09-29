@@ -3,8 +3,8 @@
   import { page } from "$app/stores";
   import Loading from "$lib/components/common/Loading.svelte";
   import SeriesList from "$lib/components/eventseries/SeriesList.svelte";
-  import { getEventSeriesList } from "$lib/flow/actions";
-  import { user } from "$lib/flow/stores";
+  import { getEventSeriesList } from "$flow/actions";
+  import { user } from "$flow/stores";
 
   export let addressObject;
 </script>

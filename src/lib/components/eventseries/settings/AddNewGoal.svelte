@@ -5,11 +5,11 @@
   import GoalDisplay from "../elements/GoalDisplay.svelte";
   import PrimaryTag from "../elements/PrimaryTag.svelte";
   import { createEventDispatcher } from "svelte";
-  import { user, eventSeries as seriesStore } from "$lib/flow/stores";
+  import { user, eventSeries as seriesStore } from "$flow/stores";
   import {
     getEventSeriesGoals,
     addAchievementGoalToEventSeries,
-  } from "$lib/flow/actions";
+  } from "$flow/actions";
 
   /** @type {import('../types').EventSeriesData} */
   export let eventSeries;

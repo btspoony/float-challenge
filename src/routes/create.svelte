@@ -4,13 +4,13 @@
     user,
     eventCreationInProgress,
     eventCreatedStatus,
-  } from "$lib/flow/stores";
+  } from "$flow/stores";
   import {
     authenticate,
     createEvent,
     getGroups,
     isSharedWithUser,
-  } from "$lib/flow/actions";
+  } from "$flow/actions";
 
   import { draftFloat, theme } from "$lib/stores";
   import { PAGE_TITLE_EXTENSION } from "$lib/constants";
@@ -19,7 +19,7 @@
   // import LibLoader from "$lib/components/LibLoader.svelte";
   // import { onMount } from "svelte";
   import Float from "$lib/components/Float.svelte";
-  import { getKeysFromClaimCode } from "$lib/flow/utils";
+  import { getKeysFromClaimCode } from "$flow/utils";
   import { slide } from "svelte/transition";
   import Loading from "$lib/components/common/Loading.svelte";
   import { NFTStorage } from "nft.storage";

@@ -6,11 +6,11 @@
     floatClaimedStatus,
     floatClaimingInProgress,
     user,
-  } from "$lib/flow/stores";
-  import { claimFLOAT, claimFLOATv2 } from "$lib/flow/actions.js";
+  } from "$flow/stores";
+  import { claimFLOAT, claimFLOATv2 } from "$flow/actions.js";
   import Countdown from "$lib/components/common/Countdown.svelte";
-  import { verifiersIdentifier } from "$lib/flow/config";
-  import { signWithClaimCode } from "$lib/flow/utils";
+  import { verifiersIdentifier } from "$flow/config";
+  import { signWithClaimCode } from "$flow/utils";
 
   const secretModule =
     floatEvent?.verifiers[`${verifiersIdentifier}.FLOATVerifiers.Secret`];

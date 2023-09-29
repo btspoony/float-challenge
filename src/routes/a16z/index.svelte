@@ -5,7 +5,7 @@
     claimFLOATv2,
     getEvent,
     resolveAddressObject,
-  } from "$lib/flow/actions.js";
+  } from "$flow/actions.js";
 
   export async function load({ url, params, stuff }) {
     let resolvedNameObject = await resolveAddressObject("0x99bd48c8036e2876");
@@ -32,18 +32,18 @@
 
 <script>
   import { page } from "$app/stores";
-  import { user } from "$lib/flow/stores";
+  import { user } from "$flow/stores";
   import { denylist } from "$lib/constants";
   import {
     hasClaimedEvent,
     getGroups,
     getCurrentHolder,
-  } from "$lib/flow/actions.js";
+  } from "$flow/actions.js";
   import ConnectWallet from "$lib/components/ConnectWallet.svelte";
   import Loading from "$lib/components/common/Loading.svelte";
   import ClaimButton from "$lib/components/ClaimButton.svelte";
-  import { getResolvedName } from "$lib/flow/utils";
-  import { authenticate } from "$lib/flow/actions";
+  import { getResolvedName } from "$flow/utils";
+  import { authenticate } from "$flow/actions";
   import Socials from "$lib/components/common/Socials.svelte";
 
   let limitedVerifier;

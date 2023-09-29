@@ -2,8 +2,8 @@
   import { t } from "svelte-i18n";
   import StrategyDisplay from "./StrategyDisplay.svelte";
   import { createEventDispatcher } from "svelte";
-  import { user, eventSeries as seriesStore } from "$lib/flow/stores";
-  import { nextTreasuryStrategyStage } from "$lib/flow/actions";
+  import { user, eventSeries as seriesStore } from "$flow/stores";
+  import { nextTreasuryStrategyStage } from "$flow/actions";
   import Button from "$lib/components/landing/Button.svelte";
 
   /** @type {import('../types').EventSeriesData} */

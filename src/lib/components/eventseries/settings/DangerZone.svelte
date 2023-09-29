@@ -1,7 +1,7 @@
 <script>
   import { t } from "svelte-i18n";
-  import { user, eventSeries as seriesStore } from "$lib/flow/stores";
-  import { revokeEventSeries } from "$lib/flow/actions";
+  import { user, eventSeries as seriesStore } from "$flow/stores";
+  import { revokeEventSeries } from "$flow/actions";
 
   /** @type {import('../types').EventSeriesData} */
   export let eventSeries;

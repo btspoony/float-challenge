@@ -3,7 +3,7 @@
     txId,
     transactionStatus,
     transactionInProgress,
-  } from "$lib/flow/stores";
+  } from "$flow/stores";
   import { slide } from "svelte/transition";
 </script>
 

@@ -5,7 +5,7 @@
   import Table, { Row, Sort } from "./Table.svelte";
   import { sortNumber, sortString } from "./sorting.js";
   import { page } from "$app/stores";
-  import { formatter } from "$lib/flow/utils";
+  import { formatter } from "$flow/utils";
   import { selectedToBurn } from "./stores";
 
   export let floats;

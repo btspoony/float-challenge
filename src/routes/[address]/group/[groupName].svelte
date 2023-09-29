@@ -8,12 +8,12 @@
     getEventsInGroup,
     getGroup,
     resolveAddressObject,
-  } from "$lib/flow/actions";
+  } from "$flow/actions";
   import {
     deleteGroupInProgress,
     deleteGroupStatus,
     user,
-  } from "$lib/flow/stores";
+  } from "$flow/stores";
 
   let events;
   let group;

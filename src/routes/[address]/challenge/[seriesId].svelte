@@ -1,6 +1,6 @@
 <script context="module">
   import { t } from "svelte-i18n";
-  import { getEventSeries, resolveAddressObject } from "$lib/flow/actions";
+  import { getEventSeries, resolveAddressObject } from "$flow/actions";
 
   export const prerender = true;
 
@@ -41,8 +41,8 @@
   import SeriesTreasury from "$lib/components/eventseries/partials/SeriesTreasury.svelte";
   import SeriesSettings from "$lib/components/eventseries/partials/SeriesSettings.svelte";
   import { seriesTab } from "$lib/stores";
-  import { getResolvedName } from "$lib/flow/utils";
-  import { user } from "$lib/flow/stores";
+  import { getResolvedName } from "$flow/utils";
+  import { user } from "$flow/stores";
 
   export let resolvedNameObject;
   export let preloadEventSeries;

@@ -6,7 +6,7 @@
   import EventCertificateItem from "../elements/EventCertificateItem.svelte";
   import SettingCertificatesSync from "../elements/SettingCertificatesSync.svelte";
   import { createEventDispatcher } from "svelte";
-  import { user } from "$lib/flow/stores";
+  import { user } from "$flow/stores";
 
   /** @type {import('../types').EventSeriesData} */
   export let eventSeries;

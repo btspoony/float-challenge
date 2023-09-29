@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher } from "svelte";
-  import { resolveAddressObject, getEvent } from "$lib/flow/actions";
+  import { resolveAddressObject, getEvent } from "$flow/actions";
   import Badge from "../svgs/badge.svelte";
   import PrimaryTag from "./PrimaryTag.svelte";
 

@@ -4,7 +4,7 @@
 
   import Table, { Row, Sort } from "./Table.svelte";
   import { sortNumber, sortString } from "./sorting.js";
-  import { formatter } from "$lib/flow/utils";
+  import { formatter } from "$flow/utils";
   import { page } from "$app/stores";
 
   export let floatEvents;

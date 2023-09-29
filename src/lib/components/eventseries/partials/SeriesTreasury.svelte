@@ -5,12 +5,12 @@
   import TreasuryStrategyItem from "../elements/TreasuryStrategyItem.svelte";
   import EventCertificateItem from "../elements/EventCertificateItem.svelte";
   import { createEventDispatcher } from "svelte";
-  import { user, eventSeries as seriesStore } from "$lib/flow/stores";
+  import { user, eventSeries as seriesStore } from "$flow/stores";
   import {
     getSeriesStrategies,
     refreshUserStrategiesStatus,
     ownsSpecificFloatsAll,
-  } from "$lib/flow/actions";
+  } from "$flow/actions";
 
   /** @type {import('../types').EventSeriesData} */
   export let eventSeries;

@@ -3,8 +3,8 @@
   import GoalDisplay from "../elements/GoalDisplay.svelte";
   import AchievementPoints from "../elements/AchievementPoints.svelte";
   import { createEventDispatcher } from "svelte";
-  import { user, eventSeries as seriesStore } from "$lib/flow/stores";
-  import { accomplishGoals } from "$lib/flow/actions";
+  import { user, eventSeries as seriesStore } from "$flow/stores";
+  import { accomplishGoals } from "$flow/actions";
 
   /** @type {import('../types').EventSeriesData} */
   export let eventSeries;

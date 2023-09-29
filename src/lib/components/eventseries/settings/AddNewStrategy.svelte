@@ -5,8 +5,8 @@
   import EnergyPoint from "$lib/components/eventseries/svgs/EnergyPoint.svelte";
   import StrategyControllerItem from "../elements/StrategyControllerItem.svelte";
   import { createEventDispatcher } from "svelte";
-  import { user, eventSeries as seriesStore } from "$lib/flow/stores";
-  import { getSeriesStrategies, addTreasuryStrategy } from "$lib/flow/actions";
+  import { user, eventSeries as seriesStore } from "$flow/stores";
+  import { getSeriesStrategies, addTreasuryStrategy } from "$flow/actions";
   import NftCollections from "$lib/components/common/NFTCollections.svelte";
 
   /** @type {import('../types').EventSeriesData} */

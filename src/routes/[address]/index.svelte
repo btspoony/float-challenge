@@ -7,9 +7,9 @@
   import Groups from "$lib/components/account/Groups.svelte";
   import Floats from "$lib/components/Floats.svelte";
   import Events from "$lib/components/Events.svelte";
-  import { user } from "$lib/flow/stores";
+  import { user } from "$flow/stores";
   import Shared from "$lib/components/account/Shared.svelte";
-  import { resolveAddressObject } from "$lib/flow/actions";
+  import { resolveAddressObject } from "$flow/actions";
   import Loading from "$lib/components/common/Loading.svelte";
   import { goto } from "$app/navigation";
 

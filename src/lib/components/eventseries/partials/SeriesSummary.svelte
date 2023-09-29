@@ -4,11 +4,11 @@
   import EventItem from "$lib/components/eventseries/elements/EventItem.svelte";
   import AchievementGoals from "$lib/components/eventseries/summary/AchievementGoals.svelte";
   import { createEventDispatcher } from "svelte";
-  import { user } from "$lib/flow/stores";
+  import { user } from "$flow/stores";
   import {
     getEventSeriesGoals,
     getAndCheckEventSeriesGoals,
-  } from "$lib/flow/actions";
+  } from "$flow/actions";
 
   /** @type {import('../types').EventSeriesData} */
   export let eventSeries;

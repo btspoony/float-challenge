@@ -1,5 +1,5 @@
 <script>
-  import { authenticate } from '$lib/flow/actions';
+  import { authenticate } from '$flow/actions';
 </script>
 
 <style>

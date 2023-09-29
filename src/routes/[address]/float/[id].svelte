@@ -5,7 +5,7 @@
     transferFLOAT,
     deleteFLOAT,
     resolveAddressObject,
-  } from "$lib/flow/actions.js";
+  } from "$flow/actions.js";
   import Meta from "$lib/components/common/Meta.svelte";
   import {
     floatDeletionInProgress,
@@ -13,8 +13,8 @@
     floatTransferInProgress,
     floatTransferStatus,
     user,
-  } from "$lib/flow/stores";
-  import { getResolvedName } from "$lib/flow/utils";
+  } from "$flow/stores";
+  import { getResolvedName } from "$flow/utils";
   import Loading from "$lib/components/common/Loading.svelte";
   import CopyBadge from "$lib/components/common/CopyBadge.svelte";
 

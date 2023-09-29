@@ -6,16 +6,16 @@
     setupAccountInProgress,
     setupAccountStatus,
     user,
-  } from "$lib/flow/stores";
+  } from "$flow/stores";
   import {
     addSharedMinter,
     getAllowed,
     isSetup,
     removeSharedMinter,
     setupAccount,
-  } from "$lib/flow/actions";
+  } from "$flow/actions";
   import UserAddress from "../UserAddress.svelte";
-  import { authenticate, unauthenticate } from "$lib/flow/actions";
+  import { authenticate, unauthenticate } from "$flow/actions";
   import CopyBadge from "$lib/components/common/CopyBadge.svelte";
 
   let newSharedMinter = "";

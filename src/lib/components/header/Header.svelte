@@ -1,13 +1,13 @@
 <script>
   // import { page } from '$app/stores';
-  import { user } from "$lib/flow/stores";
+  import { user } from "$flow/stores";
   import ConnectWallet from "$lib/components/ConnectWallet.svelte";
   import UserAddress from "../UserAddress.svelte";
   import { onMount } from "svelte";
   import { theme } from "$lib/stores.js";
   import { fade, draw } from "svelte/transition";
-  import { resolveAddressObject } from "$lib/flow/actions";
-  import { getResolvedName } from "$lib/flow/utils";
+  import { resolveAddressObject } from "$flow/actions";
+  import { getResolvedName } from "$flow/utils";
 
   let toggleTheme;
 
