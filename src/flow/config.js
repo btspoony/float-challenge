@@ -47,23 +47,27 @@ const floatEventSeriesAddress =
   (network === "testnet" ? "0x78ba14dd1c817ec7" : "0x1dd5caae66e2c440");
 
 export const addressMap = {
-  FlowToken: import.meta.env.VITE_FLOWTOKEN_ADDRESS,
-  FungibleToken: import.meta.env.VITE_FUNGIBLETOKEN_ADDRESS,
-  NonFungibleToken: import.meta.env.VITE_CORE_ADDRESS,
-  MetadataViews: import.meta.env.VITE_CORE_ADDRESS,
-  FLOAT: import.meta.env.VITE_FLOAT_ADDRESS,
-  FLOATVerifiers: import.meta.env.VITE_FLOAT_ADDRESS,
-  GrantedAccountAccess: import.meta.env.VITE_FLOAT_ADDRESS,
-  FLOATEventSeries: floatEventSeriesAddress,
-  FLOATEventSeriesViews: floatEventSeriesAddress,
-  FLOATEventSeriesGoals: floatEventSeriesAddress,
-  FLOATTreasuryStrategies: floatEventSeriesAddress,
+  FlowToken:
+    network === "testnet" ? "0x7e60df042a9c0868" : "0x1654653399040a61",
+  FungibleToken:
+    network === "testnet" ? "0x9a0766d93b6608b7" : "0xf233dcee88fe0abe",
+  NonFungibleToken:
+    network === "testnet" ? "0x631e88ae7f1d7c20" : "0x1d7e57aa55817448",
+  MetadataViews:
+    network === "testnet" ? "0x631e88ae7f1d7c20" : "0x1d7e57aa55817448",
+  FLOAT: network === "testnet" ? "0x0afe396ebc8eee65" : "0x2d4c3caffbeab845",
+  FLOATVerifiers:
+    network === "testnet" ? "0x0afe396ebc8eee65" : "0x2d4c3caffbeab845",
   NFTCatalog:
     network === "testnet" ? "0x324c34e1c517e4db" : "0x49a7cda3a1eecc29",
   NFTRetrieval:
     network === "testnet" ? "0x324c34e1c517e4db" : "0x49a7cda3a1eecc29",
+  // FLOAT Challenge Addresses
+  FLOATEventSeries: floatEventSeriesAddress,
+  FLOATEventSeriesViews: floatEventSeriesAddress,
+  FLOATEventSeriesGoals: floatEventSeriesAddress,
+  FLOATTreasuryStrategies: floatEventSeriesAddress,
 };
 
-export const verifiersIdentifier = 'A.2d4c3caffbeab845';
-export const flowTokenIdentifier = 'A.1654653399040a61';
-export const secretSalt = import.meta.env.VITE_SECRET_SALT;
+export const verifiersIdentifier =
+  "A." + addressMap.FLOATVerifiers.substring(2);
