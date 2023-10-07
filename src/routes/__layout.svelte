@@ -113,17 +113,4 @@
       padding: 10px 0;
     }
   }
-
-  .resolver-toggle {
-    padding: 3px 8px;
-    font-size: 0.5rem;
-    background-color: var(--primary-focus);
-    text-align: center;
-    display: inline-block;
-    vertical-align: middle;
-    align-items: center;
-    color: var(--primary);
-    font-weight: normal;
-    width: auto;
-  }
 </style>
