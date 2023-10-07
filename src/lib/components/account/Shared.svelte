@@ -1,35 +1,15 @@
 <script>
   import {
-    addSharedMinterInProgress,
-    addSharedMinterStatus,
-    removeSharedMinterInProgress,
     setupAccountInProgress,
     setupAccountStatus,
     user,
   } from "$flow/stores";
   import {
-    addSharedMinter,
-    getAllowed,
     isSetup,
-    removeSharedMinter,
     setupAccount,
   } from "$flow/actions";
-  import UserAddress from "../UserAddress.svelte";
   import { authenticate, unauthenticate } from "$flow/actions";
   import CopyBadge from "$lib/components/common/CopyBadge.svelte";
-
-  let newSharedMinter = "";
-
-  let removeMinter = "";
-  const loadAddresses = async () => {
-    let addresses = await getAllowed($user?.addr);
-    if (addresses?.length > 0) {
-      removeMinter = addresses[0];
-    }
-    return addresses;
-  };
-
-  let sharedMinters = loadAddresses();
 </script>
 
 <article class="user-info">
@@ -69,68 +49,6 @@
   {/if}
 </article>
 
-<!-- Add minters to your account so they can create FLOAT Events for you -->
-<article>
-  <header>
-    <h3 class="text-center">Shared Minting</h3>
-  </header>
-
-  <p class="m-0 mb-1">
-    Share this account with another address and allow them to create events on
-    your behalf. Add an address below and click on "Add Shared Minter". Do at
-    your own risk!
-  </p>
-  <label for="receiver m-0">
-    <input
-      class="m-0"
-      type="text"
-      name="receiver"
-      bind:value={newSharedMinter}
-      placeholder="0x00000000000"
-    />
-  </label>
-  {#if $addSharedMinterInProgress}
-    <button aria-busy="true" disabled>Adding...</button>
-  {:else if $addSharedMinterStatus.success}
-    <button disabled>Successfully added {newSharedMinter}</button>
-  {:else if !$addSharedMinterStatus.success && $addSharedMinterStatus.error}
-    <button class="error" disabled>
-      {$addSharedMinterStatus.error}
-    </button>
-  {:else}
-    <button
-      disabled={$addSharedMinterInProgress}
-      on:click={() => addSharedMinter(newSharedMinter)}
-      >Add Shared Minter
-    </button>
-    <p class="text-center m-0 red">
-      <small
-        ><strong>BEWARE</strong>: Anyone with access to the address above will
-        be able to control this account on FLOAT.</small
-      >
-    </p>
-  {/if}
-</article>
-
-{#await sharedMinters then sharedMinters}
-  {#if sharedMinters?.length > 0}
-    <article>
-      <label for="removeMinter">Accounts who share your account:</label>
-      <select bind:value={removeMinter} id="removeMinter" required>
-        {#each sharedMinters as minter}
-          <option value={minter}>{minter}</option>
-        {/each}
-      </select>
-      <button
-        class="outline red"
-        aria-busy={$removeSharedMinterInProgress}
-        disabled={$removeSharedMinterInProgress}
-        on:click={() => removeSharedMinter(removeMinter)}>Remove</button
-      >
-    </article>
-  {/if}
-{/await}
-
 <style>
   .user-info {
     text-align: center;
@@ -143,11 +61,6 @@
     }
   }
 
-  .user-info h4 {
-    display: inline-block;
-    margin-bottom: 50px;
-  }
-
   .user-info button {
     margin-left: 10px;
     display: inline;
@@ -158,11 +71,5 @@
 
   .logout {
     width: 200px;
-  }
-
-  @media screen and (max-width: 767px) {
-    .user-info h4 {
-      margin-bottom: 10px;
-    }
   }
 </style>

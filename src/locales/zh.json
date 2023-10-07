@@ -171,7 +171,7 @@
       "select": "选择"
     },
     "headmeta": {
-      "title-floats": "{address} 所持有的 FLOATs"
+      "title-floats": "{address} 所持有的 FLOAT Challenges"
     },
     "hint": {
       "action-successful": "{what}{action}成功!",

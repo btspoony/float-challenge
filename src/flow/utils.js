@@ -11,42 +11,6 @@ import { secretSalt } from "./config";
 
 import { Buffer } from 'buffer';
 
-export let distributeCode = `
-import FLOAT from 0xFLOAT
-import NonFungibleToken from 0xCORE
-import MetadataViews from 0xCORE
-
-transaction(eventId: UInt64, recipient: Address) {
-
-	let FLOATEvent: &FLOAT.FLOATEvent
-	let RecipientCollection: &FLOAT.Collection{NonFungibleToken.CollectionPublic}
-
-	prepare(signer: AuthAccount) {
-
-    let FLOATEvents = signer.borrow<&FLOAT.FLOATEvents>(from: FLOAT.FLOATEventsStoragePath)
-                      ?? panic("Could not borrow the FLOATEvents from the signer.")
-
-		self.FLOATEvent = FLOATEvents.borrowEventRef(eventId: eventId)
-		self.RecipientCollection = getAccount(recipient).getCapability(FLOAT.FLOATCollectionPublicPath)
-                  .borrow<&FLOAT.Collection{NonFungibleToken.CollectionPublic}>()
-                  ?? panic("Could not get the public FLOAT Collection from the recipient.")
-	}
-
-	execute {
-		//
-		// Give the "recipient" a FLOAT from the event with "id"
-		//
-
-		self.FLOATEvent.mint(recipient: self.RecipientCollection)
-		log("Distributed the FLOAT.")
-
-		//
-		// SOME OTHER ACTION HAPPENS
-		//
-	}
-}
-`;
-
 export function parseErrorMessageFromFCL(errorString) {
 	if (errorString.includes('bytes of storage which is over its capacity')) {
 		const address = errorString.substring(errorString.indexOf('(') + 1, errorString.indexOf('(') + 17);

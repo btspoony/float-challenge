@@ -199,7 +199,7 @@
       "placeholder-ex": "ex. {ex}"
     },
     "headmeta": {
-      "title-floats": "FLOATs owned by {address}"
+      "title-floats": "FLOAT Challenges owned by {address}"
     }
   },
   "errors": {

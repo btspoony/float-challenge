@@ -1,93 +1,74 @@
 <script>
   import { t } from "svelte-i18n";
-  import {
-    user,
-    eventCreationInProgress,
-    eventCreatedStatus,
-  } from "$flow/stores";
-  import {
-    authenticate,
-    createEvent,
-    getGroups,
-    isSharedWithUser,
-  } from "$flow/actions";
-
-  import { draftFloat, theme } from "$lib/stores";
+  import { authenticate, createEventSeries } from "$flow/actions";
+  import { user, eventSeries } from "$flow/stores";
   import { PAGE_TITLE_EXTENSION } from "$lib/constants";
   import { notifications } from "$lib/notifications";
+  import ImageUploader from "$lib/components/ImageUploader.svelte";
+  import SeriesCard from "$lib/components/eventseries/SeriesCard.svelte";
+  import EventItem from "$lib/components/eventseries/elements/EventItem.svelte";
+  import DialogPickingEvents from "$lib/components/eventseries/DialogPickingEvents.svelte";
 
-  // import LibLoader from "$lib/components/LibLoader.svelte";
-  // import { onMount } from "svelte";
-  import Float from "$lib/components/Float.svelte";
-  import { getKeysFromClaimCode } from "$flow/utils";
-  import { slide } from "svelte/transition";
-  import Loading from "$lib/components/common/Loading.svelte";
-  import { NFTStorage } from "nft.storage";
+  // let timezone = new Date()
+  //   .toLocaleTimeString("en-us", { timeZoneName: "short" })
+  //   .split(" ")[2];
+  let dialogOpened = false;
 
-  const NFT_STORAGE_TOKEN = import.meta.env.VITE_NFT_STORAGE_ACCESS_TOKEN;
-  const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
+  const creationInProgress = eventSeries.Creation.InProgress;
+  const creationStatus = eventSeries.Creation.Status;
+  // init with false
+  creationInProgress.set(false);
+  creationStatus.set(false);
 
-  let timezone = new Date()
-    .toLocaleTimeString("en-us", { timeZoneName: "short" })
-    .split(" ")[2];
-  /* States related to image upload */
-  // let ipfsIsReady = false;
-  let uploading = false;
-  // let uploadingPercent = 0;
-  let uploadedSuccessfully = false;
-
-  let imagePreviewSrc = null;
-
-  let advancedOptions = false;
-
-  // onMount(() => {
-  //   ipfsIsReady = window?.IpfsHttpClient ?? false;
-  // });
-
-  let uploadToIPFS = async (e) => {
-    uploading = true;
-    // uploadingPercent = 0;
-
-    let file = e.target.files[0];
-
-    // function progress(len) {
-    //   uploadingPercent = len / file.size;
-    // }
-
-    // const client = window.IpfsHttpClient.create({
-    //   url: "https://api.pinata.cloud/psa",
-    //   repo: "file-path" + Math.random(),
-    // });
-
-    const cid = await client.storeBlob(file);
-    uploadedSuccessfully = true;
-    uploading = false;
-    $draftFloat.ipfsHash = cid;
-    imagePreviewSrc = `https://nftstorage.link/ipfs/${cid}`;
-    // imagePreviewSrc = `https://nftstorage.link/ipfs/${cid}`; // if CF is slow, use <-
+  // For Event Series Creation
+  /** @type {import('../../lib/components/eventseries/types').EventSeriesCreateRequest} */
+  const draftEventSeries = {
+    basics: {
+      name: "",
+      description: "",
+      image: "",
+    },
+    presetEvents: [],
+    emptySlots: [],
   };
 
-  // function ipfsReady() {
-  //   console.log("ipfs is ready");
-  //   ipfsIsReady = true;
-  // }
+  let totalSlots = 0;
+  let totalPrimarySlots = 0;
 
-  let minter = null;
-  let claimCode = null;
-  let certificateCode = "";
-  async function initCreateFloat() {
-    // check if all required inputs are correct
-    let canCreateFloat = await checkInputs();
+  $: isPreviewOk =
+    !!draftEventSeries.basics.image &&
+    !!draftEventSeries.basics.name &&
+    !!draftEventSeries.basics.description;
 
-    if (!canCreateFloat) {
+  $: presetPrimaryAmt = draftEventSeries.presetEvents.filter(
+    (one) => one.required
+  ).length;
+  $: {
+    const presetRequired = draftEventSeries.presetEvents.filter(
+      (one) => one.required
+    ).length;
+    const emptyRequired = Math.max(totalPrimarySlots - presetRequired, 0);
+    const initIndex = draftEventSeries.presetEvents.length;
+    let slots = [];
+    for (let i = initIndex; i < totalSlots; i++) {
+      slots.push({ event: null, required: i < initIndex + emptyRequired });
+    }
+    draftEventSeries.emptySlots = slots;
+  }
+
+  async function initCreateEventSeries() {
+    let canCreateEventSeries = await checkInputs();
+
+    if (!canCreateEventSeries) {
       return;
     }
-    if (claimCode) {
-      const { publicKey } = getKeysFromClaimCode(claimCode);
-      $draftFloat.secretPK = publicKey;
-    }
 
-    createEvent(minter || $user?.addr, $draftFloat);
+    createEventSeries(
+      draftEventSeries.basics,
+      draftEventSeries.presetEvents,
+      totalSlots - draftEventSeries.presetEvents.length,
+      totalPrimarySlots - presetPrimaryAmt
+    );
   }
 
   async function checkInputs() {
@@ -95,36 +76,18 @@
     let messageString = $t("errors.common.fields-missing");
 
     // add conditions here
-    if (!$draftFloat.name) {
-      errorArray.push($t("errors.events.name-missing"));
+    if (!draftEventSeries.basics.name) {
+      errorArray.push($t("errors.challenges.name-missing"));
     }
-    if (!$draftFloat.description) {
-      errorArray.push($t("errors.events.desc"));
+    if (!draftEventSeries.basics.description) {
+      errorArray.push($t("errors.challenges.desc-missing"));
     }
-    if (!imagePreviewSrc) {
-      errorArray.push($t("errors.events.image"));
-    }
-
-    if ($draftFloat.challengeCertificate) {
-      const parts = String(certificateCode).split(":");
-      if (
-        parts.length !== 3 ||
-        !(parts[0].length === 18 && parts[0].startsWith("0x")) ||
-        !(parseInt(parts[1]) > 0) ||
-        !(parseInt(parts[2]) > 0)
-      ) {
-        messageString = $t("errors.events.invalid-certificate-code");
-      } else {
-        $draftFloat.challengeCertificate = certificateCode;
-      }
+    if (!draftEventSeries.basics.image) {
+      errorArray.push($t("errors.challenges.image-missing"));
     }
 
-    if (minter) {
-      let canMintFor = await isSharedWithUser(minter, $user?.addr);
-      if (!canMintFor) {
-        messageString = $t("errors.events.cannot-mint-for");
-        errorArray.push(minter);
-      }
+    if (totalSlots === 0 && draftEventSeries.presetEvents.length === 0) {
+      errorArray.push($t("errors.challenges.slot-required"));
     }
 
     if (errorArray.length > 0) {
@@ -134,520 +97,240 @@
       return true;
     }
   }
+
+  /**
+   * events added
+   *
+   * @param {object} added
+   * @param {string} added.host
+   * @param {string[]} added.picked
+   */
+  function onEventsAdded(added) {
+    const currentExists = draftEventSeries.presetEvents.reduce((prev, curr) => {
+      if (!curr.event) return prev;
+      prev.add(`${curr.event.host}#${curr.event.id}`);
+      return prev;
+    }, new Set());
+    const events = added.picked
+      .map((one) => ({
+        host: added.host,
+        id: one,
+      }))
+      .filter((one) => !currentExists.has(`${one.host}#${one.id}`));
+
+    draftEventSeries.presetEvents = [
+      ...draftEventSeries.presetEvents,
+      ...events.map((event) => ({
+        event,
+        required: true,
+      })),
+    ];
+
+    // update primary slots
+    totalPrimarySlots = Math.min(totalSlots, totalPrimarySlots + events.length);
+  }
+
+  function onToggleRequired(host, eventId) {
+    let slots = draftEventSeries.presetEvents;
+    for (let i = 0; i < slots.length; i++) {
+      const slot = slots[i];
+      if (slot.event?.host === host && slot.event?.id === eventId) {
+        slot.required = !slot.required;
+        break;
+      }
+    }
+    draftEventSeries.presetEvents = slots;
+  }
 </script>
 
 <svelte:head>
-  <title>Create a new FLOAT {PAGE_TITLE_EXTENSION}</title>
+  <title>
+    {$t("challenges.create.head", {
+      values: { extension: PAGE_TITLE_EXTENSION },
+    })}
+  </title>
 </svelte:head>
-
-<!-- 
-<LibLoader
-  url="https://cdn.jsdelivr.net/npm/ipfs-http-client@56.0.0/index.min.js"
-  on:loaded={ipfsReady}
-  uniqueId={+new Date()} />
--->
 
 <div class="container">
   <article>
-    <h1 class="mb-1" style="text-align: center;">Create a new FLOAT</h1>
-
-    <label for="name">
-      Event Name
-      <input type="text" id="name" name="name" bind:value={$draftFloat.name} />
-    </label>
-
-    <label for="name">
-      Event URL
-      <input type="text" id="name" name="name" bind:value={$draftFloat.url} />
-    </label>
-
-    <label for="description">
-      Event Description
-      <textarea
-        id="description"
-        name="description"
-        bind:value={$draftFloat.description}
-      />
-    </label>
-
-    {#await getGroups($user?.addr)}
-      <Loading />
-    {:then groupsWeCanAddTo}
-      {#if Object.keys(groupsWeCanAddTo).length > 0}
-        <div class="input-group">
-          <label for="groups">Add Event to Group</label>
-          <div class="input-button-group" id="names" name="names">
-            <select
-              bind:value={$draftFloat.initialGroup}
-              id="addToGroup"
-              required
-            >
-              {#each Object.keys(groupsWeCanAddTo) as groupName}
-                <option value={groupName}>{groupName}</option>
-              {/each}
-            </select>
-          </div>
-        </div>
-      {/if}
-    {/await}
-
-    <br />
-
-    <!-- {#if ipfsIsReady} -->
-    <label for="image">
-      Event Image
-      <input
-        aria-busy={!!uploading}
-        on:change={function (e) {
-          uploadToIPFS(e);
-        }}
-        type="file"
-        id="image"
-        name="image"
-        accept="image/png, image/gif, image/jpeg"
-      />
-      {#if uploading}
-        <progress indeterminate />
-      {/if}
-
-      {#if uploadedSuccessfully}
-        <small>✓ Image uploaded successfully to IPFS!</small>
-      {/if}
-    </label>
-    <!--
-    {:else}
-      <p>IPFS not loaded</p>
-    {/if}  -->
-
-    <!-- <div class="alert alert-danger text-center info">
-      <strong>IMPORTANT!</strong> <br />Our web3 image pinning provider is
-      currently broken (Infura). <br />
-      We are working on a solution/alternative. We will remove this warning once
-      we resolve the issue.
-    </div> -->
-
-    {#if imagePreviewSrc}
-      <h3>Preview</h3>
-      <Float
-        float={{
-          eventName: $draftFloat.name,
-          eventImage: $draftFloat.ipfsHash,
-          totalSupply: "SERIAL_NUM",
-          eventHost: $user?.addr || "0x0000000000",
-        }}
-      />
-      <div class="mb-2" />
-    {/if}
-
-    <!-- 
-      
-      Claimable: Yes vs No (No = host must distribute manually, similar to custom above; Yes = quantity, time and claimcode appears)
-      Quantity: UNLIMITED vs LIMITED (toggles FLOAT quantity limit input)
-      Time: UNLIMITED vs LIMITED (toggles start /end time inputs)
-      Requires Claim Code: Yes vs No (btw so are we going with hash or code after the event?) 
-    -->
-    <h3 class="mb-1">Configure your FLOAT</h3>
-
-    <h5>Can be changed later.</h5>
-    <!-- GIFTABLE -->
-    <div class="grid no-break mb-1">
-      <button
-        class:secondary={!$draftFloat.transferrable}
-        class="outline"
-        on:click={() => ($draftFloat.transferrable = true)}
-      >
-        Tradeable
-        <span>This FLOAT can be traded and/or transferred.</span>
-      </button>
-      <button
-        class:secondary={$draftFloat.transferrable}
-        class="outline"
-        on:click={() => {
-          $draftFloat.transferrable = false;
-        }}
-      >
-        Soulbound
-        <span>
-          This FLOAT <strong>cannot</strong> be traded (soulbound).
-        </span>
-      </button>
-    </div>
-
-    <div class="grid no-break mb-1">
-      <button
-        class:secondary={!$draftFloat.claimable}
-        class="outline"
-        on:click={() => ($draftFloat.claimable = true)}
-      >
-        Claimable
-        <span>
-          Users can mint their own FLOAT based on the parameters defined below.
-        </span>
-      </button>
-      <button
-        class:secondary={$draftFloat.claimable}
-        class="outline"
-        on:click={() => ($draftFloat.claimable = false)}
-      >
-        Not Claimable
-        <span
-          >You will be responsible for distributing the FLOAT to accounts.</span
-        >
-      </button>
-    </div>
-
-    <!-- {#if !$draftFloat.claimable}
-      <h5>This is how you would distribute your FLOAT to a user in Cadence:</h5>
-      <xmp class={$theme === "light" ? "xmp-light" : "xmp-dark"}
-        >{distributeCode}</xmp>
-    {/if} -->
-
-    <h5>Cannot be changed later.</h5>
-    <!-- QUANTITY -->
-    <div class="grid no-break mb-1">
-      <button
-        class:secondary={$draftFloat.quantity}
-        class="outline"
-        on:click={() => ($draftFloat.quantity = false)}
-      >
-        Unlimited Quantity
-        <span>
-          Select this if you don't want your FLOAT to have a limited quantity.
-        </span>
-      </button>
-      <button
-        class:secondary={!$draftFloat.quantity}
-        class="outline"
-        on:click={() => ($draftFloat.quantity = true)}
-      >
-        Limited Quantity
-        <span>
-          You can set the maximum number of times the FLOAT can be minted.
-        </span>
-      </button>
-    </div>
-    {#if $draftFloat.quantity}
-      <label for="quantity">
-        How many can be claimed?
-        <input
-          type="number"
-          name="quantity"
-          bind:value={$draftFloat.quantity}
-          min="1"
-          placeholder="ex. 100"
-        />
-      </label>
-      <hr />
-    {/if}
-
-    <!-- TIME -->
-    <div class="grid no-break mb-1">
-      <button
-        class:secondary={$draftFloat.timelock}
-        class="outline"
-        on:click={() => ($draftFloat.timelock = false)}
-      >
-        No Time Limit
-        <span>Can be minted at any point in the future.</span>
-      </button>
-      <button
-        class:secondary={!$draftFloat.timelock}
-        class="outline"
-        on:click={() => ($draftFloat.timelock = true)}
-      >
-        Time Limit
-        <span>Can only be minted between a specific time interval.</span>
-      </button>
-    </div>
-    {#if $draftFloat.timelock}
-      <div class="grid">
-        <!-- Date -->
-        <label for="start"
-          >Start ({timezone})
-          <input
-            type="datetime-local"
-            id="start"
-            name="start"
-            bind:value={$draftFloat.startTime}
-          />
-        </label>
-
-        <!-- Date -->
-        <label for="start"
-          >End ({timezone})
-          <input
-            type="datetime-local"
-            id="start"
-            name="start"
-            bind:value={$draftFloat.endTime}
-          />
-        </label>
-      </div>
-      <hr />
-    {/if}
-
-    <!-- SECRET -->
-    <div class="grid no-break mb-1">
-      <button
-        class:secondary={$draftFloat.claimCodeEnabled}
-        class="outline"
-        on:click={() => ($draftFloat.claimCodeEnabled = false)}
-      >
-        No Secret Code
-        <span>Your FLOAT can be minted without a secret code.</span>
-      </button>
-      <button
-        class:secondary={!$draftFloat.claimCodeEnabled}
-        class="outline"
-        on:click={() => ($draftFloat.claimCodeEnabled = true)}
-      >
-        Use Secret Code
-        <span>
-          Your FLOAT can only be minted if people know the secret code.
-        </span>
-      </button>
-    </div>
-    {#if $draftFloat.claimCodeEnabled}
-      <label for="claimCode">
-        Enter a claim code (<i>case-sensitive</i>)
-        <input
-          type="text"
-          name="claimCode"
-          bind:value={claimCode}
-          placeholder="ex. mySecretCode"
-        />
-      </label>
-      <hr />
-    {/if}
-
-    <!-- MINIMUM BALANCE -->
-    <div class="grid no-break mb-1">
-      <button
-        class:secondary={$draftFloat.minimumBalance}
-        class="outline"
-        on:click={() => ($draftFloat.minimumBalance = false)}
-      >
-        No Required Balance
-        <span>You do not have to have a minimum $FLOW balance.</span>
-      </button>
-      <button
-        class:secondary={!$draftFloat.minimumBalance}
-        class="outline"
-        on:click={() => {
-          $draftFloat.minimumBalance = true;
-        }}
-      >
-        Minimum Balance
-        <span>This FLOAT requires a minimum $FLOW balance.</span>
-      </button>
-    </div>
-    {#if $draftFloat.minimumBalance}
-      <div class="grid">
-        <label for="minimum"
-          >Amount (in $FLOW)
-          <input
-            type="number"
-            id="minimum"
-            name="minimum"
-            min="1.00"
-            placeholder="ex. 10.0"
-            step="0.01"
-            bind:value={$draftFloat.minimumBalance}
-          />
-        </label>
-      </div>
-      <hr />
-    {/if}
-
-    <!-- FLOWTOKEN PURCHASE -->
-    <div class="grid no-break mb-1">
-      <button
-        class:secondary={$draftFloat.flowTokenPurchase}
-        class="outline"
-        on:click={() => ($draftFloat.flowTokenPurchase = false)}
-      >
-        Free
-        <span>This FLOAT is free for users to claim.</span>
-      </button>
-      <button
-        class:secondary={!$draftFloat.flowTokenPurchase}
-        class="outline"
-        on:click={() => {
-          $draftFloat.flowTokenPurchase = true;
-        }}
-      >
-        Payment
-        <span>
-          This FLOAT costs $FLOW to claim. Suitable for things like tickets.
-        </span>
-      </button>
-    </div>
-    {#if $draftFloat.flowTokenPurchase}
-      <div class="grid">
-        <!-- Date -->
-        <label for="cost">
-          Cost (in $FLOW)
-          <input
-            type="number"
-            id="cost"
-            name="cost"
-            min="1.00"
-            placeholder="ex. 10.0"
-            step="0.01"
-            bind:value={$draftFloat.flowTokenPurchase}
-          />
-          <small>
-            Note: 5% of each purchase will go to the Emerald City DAO treasury.
-          </small>
-        </label>
-      </div>
-      <hr />
-    {/if}
-
-    <!-- CHALLENGE CERTIFICATE -->
-    <div class="grid no-break mb-1">
-      <button
-        class:secondary={$draftFloat.challengeCertificate}
-        class="outline"
-        on:click={() => ($draftFloat.challengeCertificate = false)}
-      >
-        {$t("events.common.verifier.label-challenge-false")}
-        <span>{$t("events.common.verifier.label-challenge-false-desc")}</span>
-      </button>
-      <button
-        class:secondary={!$draftFloat.challengeCertificate}
-        class="outline"
-        on:click={() => {
-          $draftFloat.challengeCertificate = true;
-        }}
-      >
-        {$t("events.common.verifier.label-challenge-true")}
-        <span>
-          {$t("events.common.verifier.label-challenge-true-desc")}
-        </span>
-      </button>
-    </div>
-    {#if $draftFloat.challengeCertificate}
-      <label for="certificateCode">
-        {$t("events.create.hint.enter-cert-code")}
-        <input
-          type="text"
-          name="certificateCode"
-          required
-          bind:value={certificateCode}
-        />
-      </label>
-      <hr />
-    {/if}
-
-    {#if advancedOptions}
-      <div transition:slide>
-        <h4 class="">Create on behalf of another account (shared minting)</h4>
-        <div class="input-button-group">
-          <input
-            placeholder="0x00000000000"
-            type="text"
-            id="minters"
-            name="minters"
-            bind:value={minter}
-          />
-        </div>
-        <p class="small mt-1">
-          Input an address to create an event as that account. This will only
-          work if that account has given you shared minting rights.
-        </p>
-      </div>
-    {/if}
-    <button
-      class="secondary outline text-center mt-2"
-      on:click={() => (advancedOptions = !advancedOptions)}
-    >
-      {advancedOptions ? "Hide" : "Show"} advanced options
+    <h1 class="mb-1 text-center">
+      {$t("challenges.common.create")}
+    </h1>
+  {#if !$user?.loggedIn}
+  <div class="mt-2 mb-2">
+    <button class="contrast small-button" on:click={authenticate}>
+      {$t("common.btn.connectWallet")}
     </button>
+  </div>
+  {:else}
+    <label for="seriesName">
+      {$t("challenges.create.name")}
+      <input
+        type="text"
+        id="seriesName"
+        name="seriesName"
+        bind:value={draftEventSeries.basics.name}
+      />
+    </label>
+
+    <label for="seriesDescription">
+      {$t("challenges.create.desc")}
+      <textarea
+        id="seriesDescription"
+        name="seriesDescription"
+        bind:value={draftEventSeries.basics.description}
+      />
+    </label>
+
+    <ImageUploader
+      on:ipfsAdded={(e) => {
+        draftEventSeries.basics.image = e.detail;
+      }}
+    >
+      {$t("challenges.create.image")}
+      <SeriesCard
+        slot="preview"
+        preview={true}
+        eventSeriesData={{
+          identifier: {
+            host: $user?.addr || "0x0000000000",
+          },
+          basics: draftEventSeries.basics,
+          slots: draftEventSeries.presetEvents,
+        }}
+      />
+    </ImageUploader>
+
+    {#if isPreviewOk}
+      <h3 class="mb-1 text-center">
+        {$t("challenges.create.conifg-title")}
+      </h3>
+
+      <hr />
+
+      <h5>{$t("challenges.create.empty-slots-title")}</h5>
+      <div class="flex flex-gap mb-1">
+        <label for="totalSlots" class="flex-auto">
+          <span class:highlight={totalSlots > 0}>
+            {$t("challenges.common.amount")}
+          </span>
+          <input
+            type="number"
+            id="totalSlots"
+            name="totalSlots"
+            min={totalPrimarySlots}
+            max="50"
+            required
+            bind:value={totalSlots}
+            on:change={function (e) {
+              totalSlots = Math.max(
+                Math.max(
+                  draftEventSeries.presetEvents.length,
+                  Math.min(totalSlots, 50)
+                ),
+                totalPrimarySlots
+              );
+            }}
+          />
+        </label>
+        <!-- Range slider -->
+        <label for="totalPrimarySlots">
+          <span class:highlight={totalPrimarySlots > 0}>
+            {$t("challenges.common.label-primary-slots", {
+              values: {
+                n: totalPrimarySlots ?? "",
+              },
+            })}
+          </span>
+          <input
+            type="range"
+            id="totalPrimarySlots"
+            name="totalPrimarySlots"
+            min={presetPrimaryAmt}
+            max={totalSlots}
+            required
+            bind:value={totalPrimarySlots}
+          />
+        </label>
+      </div>
+
+      {#if totalSlots > 0}
+        <hr />
+
+        <h5>
+          {$t("challenges.create.preset-title")}
+        </h5>
+        <div class="flex-wrap flex-gap mb-1">
+          {#each draftEventSeries.presetEvents as slot (slot.event?.host + slot.event?.id)}
+            <EventItem
+              item={slot}
+              on:clickItem={function (e) {
+                onToggleRequired(slot.event?.host, slot.event?.id);
+              }}
+            />
+          {/each}
+          {#each draftEventSeries.emptySlots as slot, index (`empty_${index}`)}
+            <EventItem
+              item={slot}
+              empty={true}
+              on:clickEmpty={function (e) {
+                dialogOpened = true;
+              }}
+            />
+          {/each}
+        </div>
+      {/if}
+    {/if}
 
     <footer>
-      {#if !$user?.loggedIn}
-        <div class="mt-2 mb-2">
-          <button class="contrast small-button" on:click={authenticate}>
-            {$t("common.btn.connectWallet")}
-          </button>
-        </div>
-      {:else if $eventCreationInProgress}
-        <button aria-busy="true" disabled> Creating FLOAT </button>
-      {:else if $eventCreatedStatus.success}
+      {#if $creationInProgress}
+        <button aria-busy="true" disabled>
+          {$t("common.hint.please-wait-for-tx")}
+        </button>
+      {:else if $creationStatus.success}
         <a
           role="button"
           class="d-block"
-          href="/{$user.addr}/?tab=events"
+          href="/{$user?.addr}/?tab=challenges"
           style="display:block"
         >
-          Event created successfully!
+          {$t("common.hint.action-successful", {
+            values: {
+              what: $t("challenges.common.name"),
+              action: $t("common.action.created"),
+            },
+          })}
         </a>
-      {:else if !$eventCreatedStatus.success && $eventCreatedStatus.error}
+      {:else if !$creationStatus.success && $creationStatus.error}
         <button class="error" disabled>
-          {$eventCreatedStatus.error}
+          {$creationStatus.error}
         </button>
       {:else}
-        <button on:click|preventDefault={initCreateFloat}>
-          Create FLOAT
+        <button
+          on:click|preventDefault={initCreateEventSeries}
+          disabled={!isPreviewOk}
+        >
+          {#if isPreviewOk}
+            {$t("challenges.create.button")}
+          {:else}
+            {$t("common.hint.incomplete-params")}
+          {/if}
         </button>
       {/if}
     </footer>
+  {/if}
   </article>
 </div>
 
+<DialogPickingEvents
+  bind:opened={dialogOpened}
+  on:add={function (e) {
+    onEventsAdded(e.detail);
+  }}
+/>
+
 <style>
-  h4 {
-    margin: 0;
-  }
-  .outline {
-    text-align: left;
-  }
-
-  .outline span {
-    display: block;
-    font-size: 0.75rem;
-    line-height: 1.2;
-    font-weight: 400;
-    opacity: 0.6;
-  }
-
-  .small {
-    font-size: 0.75rem;
-    line-height: 1.2;
-  }
-
-  /* .image-preview {
-    max-width: 150px;
-    height: auto;
-  }
-
-  xmp {
-    position: relative;
-    width: 100%;
-    font-size: 12px;
-    padding: 10px;
-    overflow: scroll;
-    border-radius: 5px;
-    color: white;
-  }
-
-  .xmp-dark {
-    background: rgb(56, 232, 198, 0.25);
-  }
-
-  .xmp-light {
-    background: rgb(27, 40, 50);
-  }
- */
-  h5 {
-    margin-bottom: 5px;
-  }
-
-  .error {
-    background-color: red;
-    border-color: white;
-    color: white;
-    opacity: 1;
+  .highlight {
+    color: var(--primary);
   }
 </style>

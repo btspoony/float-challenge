@@ -25,9 +25,9 @@ ____ _  _ ____ _  _ ___
 |___  \/  |___ | \|  | 
  */
 
-export { default as txCreateEvent } from '../../cadence/float/transactions/create_event.cdc?raw'
+export { default as txCreateEvent } from "$flow/cadence/float/transactions/create_event.cdc?raw";
 
-export { default as scOwnsSpecificFloatsAll } from '../../cadence/float/scripts/owns_specific_floats_all.cdc?raw'
+export { default as scOwnsSpecificFloatsAll } from "$flow/cadence/float/scripts/owns_specific_floats_all.cdc?raw";
 
 /**
 ____ _  _ ____ _  _ ___    ____ ____ ____ _ ____ ____ 
@@ -45,41 +45,41 @@ export const DELIVERY_NFT = 'nft'
 
 // -------------- Setter - Transactions --------------
 // ** Event Series Builder **
-export { default as txCreateEventSeries } from '../../cadence/float-eventseries/transactions/create_eventseries.cdc?raw'
-export { default as txRevokeEventSeries } from '../../cadence/float-eventseries/transactions/revoke_event_series.cdc?raw'
-export { default as txUpdateEventSeriesBasics } from '../../cadence/float-eventseries/transactions/update_eventseries_basics.cdc?raw'
-export { default as txUpdateEventSeriesSlots } from '../../cadence/float-eventseries/transactions/update_eventseries_slots.cdc?raw'
-export { default as txAddEventSeriesGoalByAmount } from '../../cadence/float-eventseries/transactions/add_achievement_goal_by_amount.cdc?raw'
-export { default as txAddEventSeriesGoalByPercent } from '../../cadence/float-eventseries/transactions/add_achievement_goal_by_percent.cdc?raw'
-export { default as txAddEventSeriesGoalBySpecifics } from '../../cadence/float-eventseries/transactions/add_achievement_goal_by_specifics.cdc?raw'
-export { default as txAddTreasuryStrategy } from '../../cadence/float-eventseries/transactions/add_strategy.cdc?raw'
-export { default as txDepositFungibleTokenToTreasury } from '../../cadence/float-eventseries/transactions/deposit_ft.cdc?raw'
-export { default as txDepositNonFungibleTokenToTreasury } from '../../cadence/float-eventseries/transactions/deposit_nft.cdc?raw'
-export { default as txNextTreasuryStrategyStage } from '../../cadence/float-eventseries/transactions/next_strategy_stage.cdc?raw'
-export { default as txDropTreasury } from '../../cadence/float-eventseries/transactions/drop_treasury.cdc?raw'
-export { default as txSyncCertificates } from '../../cadence/float-eventseries/transactions/sync_certificate_floats.cdc?raw'
+export { default as txCreateEventSeries } from "$flow/cadence/float-eventseries/transactions/create_eventseries.cdc?raw";
+export { default as txRevokeEventSeries } from "$flow/cadence/float-eventseries/transactions/revoke_event_series.cdc?raw";
+export { default as txUpdateEventSeriesBasics } from "$flow/cadence/float-eventseries/transactions/update_eventseries_basics.cdc?raw";
+export { default as txUpdateEventSeriesSlots } from "$flow/cadence/float-eventseries/transactions/update_eventseries_slots.cdc?raw";
+export { default as txAddEventSeriesGoalByAmount } from "$flow/cadence/float-eventseries/transactions/add_achievement_goal_by_amount.cdc?raw";
+export { default as txAddEventSeriesGoalByPercent } from "$flow/cadence/float-eventseries/transactions/add_achievement_goal_by_percent.cdc?raw";
+export { default as txAddEventSeriesGoalBySpecifics } from "$flow/cadence/float-eventseries/transactions/add_achievement_goal_by_specifics.cdc?raw";
+export { default as txAddTreasuryStrategy } from "$flow/cadence/float-eventseries/transactions/add_strategy.cdc?raw";
+export { default as txDepositFungibleTokenToTreasury } from "$flow/cadence/float-eventseries/transactions/deposit_ft.cdc?raw";
+export { default as txDepositNonFungibleTokenToTreasury } from "$flow/cadence/float-eventseries/transactions/deposit_nft.cdc?raw";
+export { default as txNextTreasuryStrategyStage } from "$flow/cadence/float-eventseries/transactions/next_strategy_stage.cdc?raw";
+export { default as txDropTreasury } from "$flow/cadence/float-eventseries/transactions/drop_treasury.cdc?raw";
+export { default as txSyncCertificates } from "$flow/cadence/float-eventseries/transactions/sync_certificate_floats.cdc?raw";
 // ** Events Collector **
-export { default as txAccomplishGoal } from '../../cadence/float-eventseries/transactions/accomplish_goals.cdc?raw'
-export { default as txClaimTreasuryRewards } from '../../cadence/float-eventseries/transactions/claim_rewards_treasury.cdc?raw'
-export { default as txRefreshUserStrategiesStatus } from '../../cadence/float-eventseries/transactions/refresh_user_strategies_status.cdc?raw'
+export { default as txAccomplishGoal } from "$flow/cadence/float-eventseries/transactions/accomplish_goals.cdc?raw";
+export { default as txClaimTreasuryRewards } from "$flow/cadence/float-eventseries/transactions/claim_rewards_treasury.cdc?raw";
+export { default as txRefreshUserStrategiesStatus } from "$flow/cadence/float-eventseries/transactions/refresh_user_strategies_status.cdc?raw";
 // For Dev
-export { default as txCleanup } from '../../cadence/float-eventseries/transactions/dev/cleanup.cdc?raw'
+export { default as txCleanup } from "$flow/cadence/float-eventseries/transactions/dev/cleanup.cdc?raw";
 
 // -------------- Getter - Scripts --------------
 // ** Event Series Builder **
-export { default as scGetEventSeriesGoals } from '../../cadence/float-eventseries/scripts/get_series_goals.cdc?raw'
+export { default as scGetEventSeriesGoals } from "$flow/cadence/float-eventseries/scripts/get_series_goals.cdc?raw";
 
 // ** Events Collector **
-export { default as scGetGlobalEventSeriesList } from '../../cadence/float-eventseries/scripts/get_global_event_series_list.cdc?raw'
-export { default as scGetEventSeriesList } from '../../cadence/float-eventseries/scripts/get_event_series_list.cdc?raw'
-export { default as scGetEventSeries } from '../../cadence/float-eventseries/scripts/get_event_series.cdc?raw'
+export { default as scGetGlobalEventSeriesList } from "$flow/cadence/float-eventseries/scripts/get_global_event_series_list.cdc?raw";
+export { default as scGetEventSeriesList } from "$flow/cadence/float-eventseries/scripts/get_event_series_list.cdc?raw";
+export { default as scGetEventSeries } from "$flow/cadence/float-eventseries/scripts/get_event_series.cdc?raw";
 
-export { default as scGetBalances } from '../../cadence/float-eventseries/scripts/get_balances.cdc?raw'
-export { default as scGetCollectionsNotEmpty } from '../../cadence/float-eventseries/scripts/get_collections_not_empty.cdc?raw'
-export { default as scGetCollections } from '../../cadence/float-eventseries/scripts/get_collections.cdc?raw'
-export { default as scGetTreasuryData } from '../../cadence/float-eventseries/scripts/get_treasury_data.cdc?raw'
-export { default as scGetSeriesStrategies } from '../../cadence/float-eventseries/scripts/get_series_strategies.cdc?raw'
+export { default as scGetBalances } from "$flow/cadence/float-eventseries/scripts/get_balances.cdc?raw";
+export { default as scGetCollectionsNotEmpty } from "$flow/cadence/float-eventseries/scripts/get_collections_not_empty.cdc?raw";
+export { default as scGetCollections } from "$flow/cadence/float-eventseries/scripts/get_collections.cdc?raw";
+export { default as scGetTreasuryData } from "$flow/cadence/float-eventseries/scripts/get_treasury_data.cdc?raw";
+export { default as scGetSeriesStrategies } from "$flow/cadence/float-eventseries/scripts/get_series_strategies.cdc?raw";
 
-export { default as scHasAchievementBoard } from '../../cadence/float-eventseries/scripts/has_achievement_board.cdc?raw'
-export { default as scGetAchievementRecords } from '../../cadence/float-eventseries/scripts/get_achievement_records.cdc?raw'
-export { default as scGetAndCheckEventSeriesGoals } from '../../cadence/float-eventseries/scripts/get_and_check_series_goals.cdc?raw'
+export { default as scHasAchievementBoard } from "$flow/cadence/float-eventseries/scripts/has_achievement_board.cdc?raw";
+export { default as scGetAchievementRecords } from "$flow/cadence/float-eventseries/scripts/get_achievement_records.cdc?raw";
+export { default as scGetAndCheckEventSeriesGoals } from "$flow/cadence/float-eventseries/scripts/get_and_check_series_goals.cdc?raw";

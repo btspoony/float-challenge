@@ -2,7 +2,7 @@ import { config } from "@onflow/fcl";
 
 config({
   "app.detail.title": "FLOAT", // Shows user what dapp is trying to connect
-  "app.detail.icon": "https://floats.city/floatlogo_big.png", // shows image to the user to display your dapp brand
+  "app.detail.icon": "https://floats.city/float-logo.png", // shows image to the user to display your dapp brand
   "accessNode.api": import.meta.env.VITE_ACCESS_NODE_API, // import.meta.env.VITE_ACCESS_NODE_API,
   "discovery.wallet": "https://fcl-discovery.onflow.org/authn",
   "0xFLOAT": import.meta.env.VITE_FLOAT_ADDRESS,
@@ -12,8 +12,8 @@ config({
   "discovery.authn.include": ["0xead892083b3e2c6c"], // Service account address
   "0xFN": "0x233eb012d34b0070",
   "0xFIND": "0x097bafa4e0b48eef",
-  "0xFLOWSTORAGEFEES": "0xe467b9dd11fa00df"
-})
+  "0xFLOWSTORAGEFEES": "0xe467b9dd11fa00df",
+});
 
 const isTestnet = import.meta.env.VITE_FLOW_NETWORK === 'testnet'
 const floatEventSeriesAddress = import.meta.env.VITE_FLOAT_EVENTSERIES_ADDRESS || (isTestnet ? "0x78ba14dd1c817ec7" : "0x1dd5caae66e2c440")

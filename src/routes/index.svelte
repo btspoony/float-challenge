@@ -1,85 +1,85 @@
 <script>
-  // import CheckAddress from "$lib/components/CheckAddress.svelte";
-  import Stats from "$lib/components/common/Stats.svelte";
-  import Button from "$lib/components/landing/Button.svelte";
-  import Comparison from "$lib/components/landing/Comparison.svelte";
-  import HowWorks from "$lib/components/landing/HowWorks.svelte";
-  import Testimonials from "$lib/components/landing/Testimonials.svelte";
-  import UseCases from "$lib/components/landing/UseCases.svelte";
+  import { t } from "svelte-i18n";
   import { PAGE_TITLE_EXTENSION } from "$lib/constants";
+  import Pagination from "$lib/components/common/table/Pagination.svelte";
+  import Loading from "$lib/components/common/Loading.svelte";
+  import SeriesList from "$lib/components/eventseries/SeriesList.svelte";
+  import { setContext } from "svelte";
+  import { user } from "$flow/stores";
+  import { authenticate, getGlobalEventSeriesList } from "$flow/actions";
+
+  let page = 0;
+  let pageIndex = 0;
+  let pageSize = 20;
+  let withTreasury = true;
+
+  $: promise = getGlobalEventSeriesList(page, pageSize, withTreasury);
+
+  setContext("state", {
+    getState: () => ({
+      page,
+      pageIndex,
+      pageSize,
+    }),
+    setPage: (_page, _pageIndex) => {
+      page = _page;
+      pageIndex = _pageIndex;
+    },
+  });
 </script>
 
 <svelte:head>
-  <title>Home {PAGE_TITLE_EXTENSION}</title>
+  <title>
+    {$t("challenges.list.head", {
+      values: { extension: PAGE_TITLE_EXTENSION },
+    })}
+  </title>
 </svelte:head>
 
-<div class="hero">
-  <h1>Proof of attendance #onFlow.</h1>
-  <h3>Create events for your communities and prove that they were there.</h3>
-</div>
+<article>
+  <header class="text-center">
+    <h3>{$t("challenges.list.title")}</h3>
+  </header>
+  <label for="withTreasury">
+    <input
+      type="checkbox"
+      id="withTreasury"
+      name="withTreasury"
+      role="switch"
+      bind:checked={withTreasury}
+    />
+    {$t("challenges.list.filter")}
+  </label>
+  {#await promise}
+    <Loading />
+  {:then result}
+    <SeriesList list={result.list} />
+    <div class="mb-1">
+      <Pagination {page} {pageSize} count={result.total ?? 0} />
+    </div>
+  {/await}
 
-<Stats />
-
-<!-- <video
-  src="/updated_float.mp4"
-  alt="FLOAT Video - Freakizoid"
-  autoplay
-  controls
-  loop /> -->
-
-<Button />
-
-<UseCases />
-
-<Button />
-
-<HowWorks />
-
-<Button />
-
-<Comparison />
-
-<Button />
-
-<Testimonials />
-
-<Button />
+  {#if $user?.addr}
+    <a href="/challenges/create" role="button" class="addnew">
+      {$t("challenges.common.create")}
+    </a>
+  {:else}
+    <button class="contrast small-button" on:click={authenticate}>
+      {$t("common.btn.connectWallet")}
+    </button>
+  {/if}
+</article>
 
 <style>
-  .hero {
-    position: relative;
-    padding: 3rem 2rem 2rem 8rem;
+  .addnew {
+    font-weight: bold;
+    width: 100%;
+    margin-bottom: 20px;
   }
 
-  .hero h1 {
-    font-size: 3.2rem;
-    line-height: 120%;
-    font-weight: 800;
-  }
-
-  video {
-    position: relative;
-    width: 50%;
-    left: 25%;
-    text-align: center;
-    border-radius: 0.4rem;
-  }
-
-  h3 {
-    font-size: 1.45rem;
-    font-weight: 600;
-    line-height: 1.75rem;
-    margin-bottom: 1rem;
-  }
-
-  @media all and (max-width: 768px) {
-    .hero {
-      padding-left: 2rem;
-    }
-
-    video {
-      width: 75%;
-      left: 12.5%;
+  @media screen and (max-width: 767px) {
+    .addnew {
+      margin-top: 20px;
     }
   }
 </style>

@@ -1,5 +1,5 @@
 <script>
-  // import { page } from '$app/stores';
+  import { t } from "svelte-i18n";
   import { user } from "$flow/stores";
   import ConnectWallet from "$lib/components/ConnectWallet.svelte";
   import UserAddress from "../UserAddress.svelte";
@@ -32,13 +32,15 @@
 <nav>
   <ul>
     <li>
-      <!-- when on mainnnet, replace this line with the one below-->
       <h1>
-        <a href="/"
-          ><img src="/floatlogowebpage.png" alt="Emerald City FLOAT" /></a>
+        <a href="/" class="logo-wrapper">
+          <img src="https://floats.city/float-logo.svg" alt="FLOAT Challenges for Emerald City FLOAT" />
+          <span style="min-width: fit-content;">{$t('challenges.list.title')}</span>
+        </a>
       </h1>
-      <!-- <h1><a href="/"><img src="/floatlogowebpage.png" alt="Emerald City FLOAT" /></a></h1> -->
     </li>
+  </ul>
+  <ul class="text-center">
     <li>
       <a class="theme-toggle" href="/" on:click|preventDefault={toggleTheme}>
         {#if $theme === "light"}
@@ -68,13 +70,6 @@
         {/if}
       </a>
     </li>
-
-    <li>
-      <a href="/challenges">Challenges</a>
-    </li>
-  </ul>
-  <ul class="text-center">
-    <!-- <li><a href="/create" role="button" class="small-button" sveltekit:prefetch>+</a></li> -->
 
     <li class="block">
       {#await resolvedName then resolvedName}
@@ -110,9 +105,19 @@
     padding: 6px 14px;
   }
 
+  .logo-wrapper {
+    align-items: center;
+    display: flex;
+    gap: .5em;;
+    font-size: 1rem
+  }
+
+  .logo-wrapper img {
+    max-width: 2.5em;
+  }
+
   img {
     height: auto;
-    max-width: 160px;
   }
 
   .theme-toggle {
@@ -138,7 +143,7 @@
 
   @media screen and (max-width: 500px) {
     img {
-      max-width: 100px;
+      max-width: 2em;
     }
   }
 

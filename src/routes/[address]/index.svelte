@@ -4,9 +4,6 @@
   import Meta from "$lib/components/common/Meta.svelte";
 
   import Challenges from "$lib/components/Challenges.svelte";
-  import Groups from "$lib/components/account/Groups.svelte";
-  import Floats from "$lib/components/Floats.svelte";
-  import Events from "$lib/components/Events.svelte";
   import { user } from "$flow/stores";
   import Shared from "$lib/components/account/Shared.svelte";
   import { resolveAddressObject } from "$flow/actions";
@@ -32,36 +29,6 @@
 
 <div class="">
   <ul class="tabs">
-    <li
-      on:click={function () {
-        query.set("tab", "floats");
-        goto(`?${query.toString()}`);
-      }}
-      class:animatedlink={tab !== "floats"}
-      class:selected={tab === "floats"}
-    >
-      {$t("common.main.floats", { values: { n: 2 } })}
-    </li>
-    <li
-      on:click={function () {
-        query.set("tab", "events");
-        goto(`?${query.toString()}`);
-      }}
-      class:animatedlink={tab !== "events"}
-      class:selected={tab === "events"}
-    >
-      {$t("common.main.events")}
-    </li>
-    <li
-      on:click={function () {
-        query.set("tab", "groups");
-        goto(`?${query.toString()}`);
-      }}
-      class:animatedlink={tab !== "groups"}
-      class:selected={tab === "groups"}
-    >
-      {$t("common.main.groups")}
-    </li>
     <li
       on:click={function () {
         query.set("tab", "challenges");
@@ -91,18 +58,10 @@
   {#await addressObject}
     <Loading />
   {:then addressObject}
-    {#if tab === "floats"}
-      <Floats {addressObject} />
-    {:else if tab === "events"}
-      <Events {addressObject} />
-    {:else if tab === "groups"}
-      <Groups {addressObject} />
-    {:else if tab === "challenges"}
-      <Challenges {addressObject} />
-    {:else if tab === "account"}
+    {#if tab === "account"}
       <Shared />
     {:else}
-      <Floats {addressObject} />
+      <Challenges {addressObject} />
     {/if}
   {/await}
 </div>

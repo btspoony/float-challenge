@@ -35,6 +35,7 @@
     dispatch("seriesUpdated");
   }}
 />
+<!-- Remove Challenge Certificates for temporary
 <h4 class="subtitle">{$t("challenges.detail.main.title-certificate")}</h4>
 <p class="subtitle-desc">
   {$t("challenges.detail.main.title-desc-setting-certificate")}
@@ -45,6 +46,7 @@
     dispatch("seriesUpdated");
   }}
 />
+-->
 <h4 class="subtitle">{$t("challenges.detail.main.title-treasury")}</h4>
 <p class="subtitle-desc">
   {$t("challenges.detail.main.title-desc-settings-treasury")}

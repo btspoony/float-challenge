@@ -4,7 +4,6 @@
   import { createEventDispatcher } from "svelte";
   import { user, eventSeries as seriesStore } from "$flow/stores";
   import { nextTreasuryStrategyStage } from "$flow/actions";
-  import Button from "$lib/components/landing/Button.svelte";
 
   /** @type {import('../types').EventSeriesData} */
   export let eventSeries;
