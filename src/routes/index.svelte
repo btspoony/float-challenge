@@ -60,7 +60,7 @@
   {/await}
 
   {#if $user?.addr}
-    <a href="/challenges/create" role="button" class="addnew">
+    <a href="/create" role="button" class="addnew">
       {$t("challenges.common.create")}
     </a>
   {:else}

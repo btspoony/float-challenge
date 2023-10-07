@@ -3,7 +3,7 @@ import { browser } from '$app/env';
 import * as fcl from "@onflow/fcl";
 
 import "./config.js";
-import { addressMap, flowTokenIdentifier } from './config.js';
+import { addressMap } from "./config.js";
 import {
   user,
   txId,
@@ -16,10 +16,8 @@ import { get } from "svelte/store";
 
 import * as cadence from "./cadence";
 
-import { draftFloat } from "$lib/stores";
 import { respondWithError, respondWithSuccess } from "$lib/response";
 import { parseErrorMessageFromFCL } from "./utils.js";
-import { notifications } from "$lib/notifications";
 
 if (browser) {
   // set Svelte $user store to currentUser,
@@ -33,315 +31,51 @@ export const authenticate = async () => {
   await fcl.authenticate();
 };
 
-/****************************** SETTERS ******************************/
-
-export const setupAccount = async () => {
-  setupAccountInProgress.set(true);
-
-  let transactionId = false;
-  initTransactionState();
-
-  try {
-    transactionId = await fcl.mutate({
-      cadence: `
-      import FLOAT from 0xFLOAT
-      import NonFungibleToken from 0xCORE
-      import MetadataViews from 0xCORE
-      import GrantedAccountAccess from 0xFLOAT
-
-      transaction {
-
-        prepare(acct: AuthAccount) {
-          // SETUP COLLECTION
-          if acct.borrow<&FLOAT.Collection>(from: FLOAT.FLOATCollectionStoragePath) == nil {
-              acct.save(<- FLOAT.createEmptyCollection(), to: FLOAT.FLOATCollectionStoragePath)
-              acct.link<&FLOAT.Collection{NonFungibleToken.Receiver, NonFungibleToken.CollectionPublic, MetadataViews.ResolverCollection, FLOAT.CollectionPublic}>
-                      (FLOAT.FLOATCollectionPublicPath, target: FLOAT.FLOATCollectionStoragePath)
-          }
-
-          // SETUP FLOATEVENTS
-          if acct.borrow<&FLOAT.FLOATEvents>(from: FLOAT.FLOATEventsStoragePath) == nil {
-            acct.save(<- FLOAT.createEmptyFLOATEventCollection(), to: FLOAT.FLOATEventsStoragePath)
-            acct.link<&FLOAT.FLOATEvents{FLOAT.FLOATEventsPublic, MetadataViews.ResolverCollection}>
-                      (FLOAT.FLOATEventsPublicPath, target: FLOAT.FLOATEventsStoragePath)
-          }
-
-          // SETUP SHARED MINTING
-          if acct.borrow<&GrantedAccountAccess.Info>(from: GrantedAccountAccess.InfoStoragePath) == nil {
-              acct.save(<- GrantedAccountAccess.createInfo(), to: GrantedAccountAccess.InfoStoragePath)
-              acct.link<&GrantedAccountAccess.Info{GrantedAccountAccess.InfoPublic}>
-                      (GrantedAccountAccess.InfoPublicPath, target: GrantedAccountAccess.InfoStoragePath)
-          }
-        }
-
-        execute {
-          log("Finished setting up the account for FLOATs.")
-        }
-      }
-      `,
-      args: (arg, t) => [],
-      payer: fcl.authz,
-      proposer: fcl.authz,
-      authorizations: [fcl.authz],
-      limit: 999,
-    });
-
-    txId.set(transactionId);
-
-    fcl.tx(transactionId).subscribe((res) => {
-      transactionStatus.set(res.status);
-      if (res.status === 4) {
-        if (res.statusCode === 0) {
-          setupAccountStatus.set(respondWithSuccess());
-        } else {
-          setupAccountStatus.set(
-            respondWithError(
-              parseErrorMessageFromFCL(res.errorMessage),
-              res.statusCode
-            )
-          );
-        }
-        setupAccountInProgress.set(false);
-        setTimeout(() => transactionInProgress.set(false), 2000);
-      }
-    });
-
-    let res = await fcl.tx(transactionId).onceSealed();
-    return res;
-  } catch (e) {
-    setupAccountStatus.set(false);
-    transactionStatus.set(99);
-    console.log(e);
-
-    setTimeout(() => transactionInProgress.set(false), 10000);
-  }
-};
+function initTransactionState() {
+  transactionInProgress.set(true);
+  transactionStatus.set(-1);
+}
 
 /****************************** GETTERS ******************************/
 
-export const isSetup = async (addr) => {
-  try {
-    let queryResult = await fcl.query({
-      cadence: `
-      import FLOAT from 0xFLOAT
-      import NonFungibleToken from 0xCORE
-      import MetadataViews from 0xCORE
-      import GrantedAccountAccess from 0xFLOAT
-
-      pub fun main(accountAddr: Address): Bool {
-        let acct = getAccount(accountAddr)
-
-        if acct.getCapability<&FLOAT.Collection{FLOAT.CollectionPublic}>(FLOAT.FLOATCollectionPublicPath).borrow() == nil {
-            return false
-        }
-      
-        if acct.getCapability<&FLOAT.FLOATEvents{FLOAT.FLOATEventsPublic}>(FLOAT.FLOATEventsPublicPath).borrow() == nil {
-          return false
-        }
-      
-        if acct.getCapability<&GrantedAccountAccess.Info{GrantedAccountAccess.InfoPublic}>(GrantedAccountAccess.InfoPublicPath).borrow() == nil {
-            return false
-        }
-
-        return true
-      }
-      `,
-      args: (arg, t) => [arg(addr, t.Address)],
-    });
-    return queryResult;
-  } catch (e) {
-    console.log(e);
-  }
-};
-
 export const getEvent = async (addr, eventId) => {
-  try {
-    let queryResult = await fcl.query({
-      cadence: `
-      import FLOAT from 0xFLOAT
-
-      pub fun main(account: Address, eventId: UInt64): FLOATEventMetadata {
-        let floatEventCollection = getAccount(account).getCapability(FLOAT.FLOATEventsPublicPath)
-                                    .borrow<&FLOAT.FLOATEvents{FLOAT.FLOATEventsPublic}>()
-                                    ?? panic("Could not borrow the FLOAT Events Collection from the account.")
-        let event = floatEventCollection.borrowPublicEventRef(eventId: eventId) ?? panic("This event does not exist in the account")
-        return FLOATEventMetadata(
-          _claimable: event.claimable, 
-          _dateCreated: event.dateCreated, 
-          _description: event.description, 
-          _eventId: event.eventId, 
-          _extraMetadata: event.getExtraMetadata(), 
-          _groups: event.getGroups(), 
-          _host: event.host, 
-          _image: event.image, 
-          _name: event.name, 
-          _totalSupply: event.totalSupply, 
-          _transferrable: event.transferrable, 
-          _url: event.url, 
-          _verifiers: event.getVerifiers()
-        )
-      }
-
-      pub struct FLOATEventMetadata {
-        pub let claimable: Bool
-        pub let dateCreated: UFix64
-        pub let description: String 
-        pub let eventId: UInt64
-        pub let extraMetadata: {String: AnyStruct}
-        pub let groups: [String]
-        pub let host: Address
-        pub let image: String 
-        pub let name: String
-        pub let totalSupply: UInt64
-        pub let transferrable: Bool
-        pub let url: String
-        pub let verifiers: {String: [{FLOAT.IVerifier}]}
-
-        init(
-            _claimable: Bool,
-            _dateCreated: UFix64,
-            _description: String, 
-            _eventId: UInt64,
-            _extraMetadata: {String: AnyStruct},
-            _groups: [String],
-            _host: Address, 
-            _image: String, 
-            _name: String,
-            _totalSupply: UInt64,
-            _transferrable: Bool,
-            _url: String,
-            _verifiers: {String: [{FLOAT.IVerifier}]}
-        ) {
-            self.claimable = _claimable
-            self.dateCreated = _dateCreated
-            self.description = _description
-            self.eventId = _eventId
-            self.extraMetadata = _extraMetadata
-            self.groups = _groups
-            self.host = _host
-            self.image = _image
-            self.name = _name
-            self.transferrable = _transferrable
-            self.totalSupply = _totalSupply
-            self.url = _url
-            self.verifiers = _verifiers
-        }
-      }
-      `,
-      args: (arg, t) => [arg(addr, t.Address), arg(eventId, t.UInt64)],
-    });
-    return queryResult || {};
-  } catch (e) {
-    console.log(e);
-  }
+  return await generalQuery(
+    cadence.replaceImportAddresses(cadence.scGetEvent, addressMap),
+    (arg, t) => [arg(addr, t.Address), arg(eventId, t.UInt64)],
+    {}
+  );
 };
 
 export const getEvents = async (addr) => {
-  try {
-    let queryResult = await fcl.query({
-      cadence: `
-      import FLOAT from 0xFLOAT
-
-      pub fun main(account: Address): {UFix64: FLOATEventMetadata} {
-        let floatEventCollection = getAccount(account).getCapability(FLOAT.FLOATEventsPublicPath)
-                                    .borrow<&FLOAT.FLOATEvents{FLOAT.FLOATEventsPublic}>()
-                                    ?? panic("Could not borrow the FLOAT Events Collection from the account.")
-        let floatEvents: [UInt64] = floatEventCollection.getIDs() 
-        let returnVal: {UFix64: FLOATEventMetadata} = {}
-
-        for eventId in floatEvents {
-          let event = floatEventCollection.borrowPublicEventRef(eventId: eventId) ?? panic("This event does not exist in the account")
-          let metadata = FLOATEventMetadata(
-            _claimable: event.claimable, 
-            _dateCreated: event.dateCreated, 
-            _description: event.description, 
-            _eventId: event.eventId, 
-            _extraMetadata: event.getExtraMetadata(), 
-            _groups: event.getGroups(), 
-            _host: event.host, 
-            _image: event.image, 
-            _name: event.name, 
-            _totalSupply: event.totalSupply, 
-            _transferrable: event.transferrable, 
-            _url: event.url, 
-            _verifiers: event.getVerifiers()
-          )
-          returnVal[event.dateCreated] = metadata
-        }
-        return returnVal
-      }
-
-      pub struct FLOATEventMetadata {
-        pub let claimable: Bool
-        pub let dateCreated: UFix64
-        pub let description: String 
-        pub let eventId: UInt64
-        pub let extraMetadata: {String: AnyStruct}
-        pub let groups: [String]
-        pub let host: Address
-        pub let image: String 
-        pub let name: String
-        pub let totalSupply: UInt64
-        pub let transferrable: Bool
-        pub let url: String
-        pub let verifiers: {String: [{FLOAT.IVerifier}]}
-
-        init(
-            _claimable: Bool,
-            _dateCreated: UFix64,
-            _description: String, 
-            _eventId: UInt64,
-            _extraMetadata: {String: AnyStruct},
-            _groups: [String],
-            _host: Address, 
-            _image: String, 
-            _name: String,
-            _totalSupply: UInt64,
-            _transferrable: Bool,
-            _url: String,
-            _verifiers: {String: [{FLOAT.IVerifier}]}
-        ) {
-            self.claimable = _claimable
-            self.dateCreated = _dateCreated
-            self.description = _description
-            self.eventId = _eventId
-            self.extraMetadata = _extraMetadata
-            self.groups = _groups
-            self.host = _host
-            self.image = _image
-            self.name = _name
-            self.transferrable = _transferrable
-            self.totalSupply = _totalSupply
-            self.url = _url
-            self.verifiers = _verifiers
-        }
-      }
-      `,
-      args: (arg, t) => [arg(addr, t.Address)],
-    });
-    return queryResult || {};
-  } catch (e) {}
+  return await generalQuery(
+    cadence.replaceImportAddresses(cadence.scGetEvents, addressMap),
+    (arg, t) => [arg(addr, t.Address)],
+    []
+  );
 };
 
 export const resolveAddressObject = async (lookup) => {
   let answer = {
     resolvedNames: {
       find: "",
-      fn: ""
+      fn: "",
     },
-    address: ""
+    address: "",
   };
-  let rootLookup = lookup.split('.')[0];
+  let rootLookup = lookup.split(".")[0];
   // const findCache = JSON.parse(localStorage.getItem('findCache')) || {};
   // if (findCache && findCache[lookup]) {
   //   return Promise.resolve(findCache[lookup]);
   // }
   try {
-    if (rootLookup.length === 18 && rootLookup.substring(0, 2) === '0x') {
+    if (rootLookup.length === 18 && rootLookup.substring(0, 2) === "0x") {
       answer.address = lookup;
       // FIXME: no need resolve names in dev
-      if (import.meta.env.DEV && import.meta.env.VITE_FLOW_NETWORK === 'testnet') {
-        return answer
+      if (
+        import.meta.env.DEV &&
+        import.meta.env.VITE_FLOW_NETWORK === "testnet"
+      ) {
+        return answer;
       }
       answer.resolvedNames.find = await fcl.query({
         cadence: `
@@ -352,9 +86,7 @@ export const resolveAddressObject = async (lookup) => {
             return name?.concat(".find")
         }
         `,
-        args: (arg, t) => [
-          arg(lookup, t.Address)
-        ]
+        args: (arg, t) => [arg(lookup, t.Address)],
       });
 
       answer.resolvedNames.fn = await fcl.query({
@@ -386,11 +118,9 @@ export const resolveAddressObject = async (lookup) => {
           return flownsName
         }
         `,
-        args: (arg, t) => [
-          arg(lookup, t.Address)
-        ]
+        args: (arg, t) => [arg(lookup, t.Address)],
       });
-    } else if (lookup.includes('.find')) {
+    } else if (lookup.includes(".find")) {
       answer.resolvedNames.find = lookup;
       answer.address = await fcl.query({
         cadence: `
@@ -400,15 +130,13 @@ export const resolveAddressObject = async (lookup) => {
           return FIND.lookupAddress(name)
         }
         `,
-        args: (arg, t) => [
-          arg(rootLookup, t.String)
-        ]
-      })
-    } else if (lookup.includes('.fn') || lookup.includes('.meow')) {
-      let nameArr = lookup.split('.')
-      const label = nameArr[0]
-      const parent = nameArr[1]
-      answer.resolvedNames.fn = lookup
+        args: (arg, t) => [arg(rootLookup, t.String)],
+      });
+    } else if (lookup.includes(".fn") || lookup.includes(".meow")) {
+      let nameArr = lookup.split(".");
+      const label = nameArr[0];
+      const parent = nameArr[1];
+      answer.resolvedNames.fn = lookup;
       answer.address = await fcl.query({
         cadence: `
         import Flowns from 0xFN
@@ -423,11 +151,8 @@ export const resolveAddressObject = async (lookup) => {
           return address
         }
         `,
-        args: (arg, t) => [
-          arg(label, t.String),
-          arg(parent, t.String)
-        ]
-      })
+        args: (arg, t) => [arg(label, t.String), arg(parent, t.String)],
+      });
     }
     // findCache[lookup] = queryResult;
     // localStorage.setItem('findCache', JSON.stringify(findCache));
@@ -435,16 +160,7 @@ export const resolveAddressObject = async (lookup) => {
   } catch (e) {
     return answer;
   }
-}
-
-function initTransactionState() {
-  // configureFCL(get(currentWallet));
-  // console.log(get(currentWallet));
-  transactionInProgress.set(true);
-  transactionStatus.set(-1);
-  floatClaimedStatus.set(false);
-  eventCreatedStatus.set(false);
-}
+};
 
 /**
  * genrenal method of sending transaction

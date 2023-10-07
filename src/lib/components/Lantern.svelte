@@ -1,4 +1,6 @@
 <script>
+  import { parseIPFSImageURL } from "$flow/utils";
+
   export let ipfsHash;
   export let direction = "creation";
 
@@ -18,7 +20,7 @@
     style="left: {direction === 'creation'
       ? Math.floor(Math.random() * (90 - 10 + 1)) + 10
       : Math.floor(Math.random() * (70 - 30 + 1)) + 30}vw;"
-    src="https://nftstorage.link/ipfs/{ipfsHash}"
+    src="{parseIPFSImageURL(ipfsHash)}"
     alt="lantern" />
 {/if}
 

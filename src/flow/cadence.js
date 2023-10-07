@@ -1,4 +1,5 @@
-const REGEXP_IMPORT = /(\s*import\s*)([\w\d]+)(\s+from\s*)([\w\d"-.\\/]+)/g;
+const REGEXP_IMPORT =
+  /(\s*import\s*)"?([\w\d]+)"?(\s+from\s*)?([\w\d"-.\\/]+)?/g;
 
 /**
  * Returns Cadence template code with replaced import addresses
@@ -11,13 +12,19 @@ const REGEXP_IMPORT = /(\s*import\s*)([\w\d]+)(\s+from\s*)([\w\d"-.\\/]+)/g;
 export const replaceImportAddresses = (code, addressMap, byName = true) => {
   return code.replace(REGEXP_IMPORT, (match, imp, contract, _, address) => {
     const key = byName ? contract : address;
-    const newAddress = addressMap instanceof Function ? addressMap(key) : addressMap[key];
+    const newAddress =
+      addressMap instanceof Function ? addressMap(key) : addressMap[key];
 
     // If the address is not inside addressMap we shall not alter import statement
     const validAddress = newAddress || address;
     return `${imp}${contract} from ${validAddress}`;
   });
 };
+
+// General
+
+export { default as scGetEvent } from "$flow/cadence/float/scripts/get_event.cdc?raw";
+export { default as scGetEvents } from "$flow/cadence/float/scripts/get_events.cdc?raw";
 
 /**
 ____ _  _ ____ _  _ ___
@@ -36,12 +43,12 @@ ____ _  _ ____ _  _ ___    ____ ____ ____ _ ____ ____
  */
 
 // Contants
-export const STRATEGY_RAFFLE = 'raffleStrategy'
-export const STRATEGY_QUEUE = 'queueStrategy'
+export const STRATEGY_RAFFLE = "raffleStrategy";
+export const STRATEGY_QUEUE = "queueStrategy";
 
-export const DELIVERY_FT_IDENTICAL = 'ftIdenticalAmount'
-export const DELIVERY_FT_RANDOM = 'ftRandomAmount'
-export const DELIVERY_NFT = 'nft'
+export const DELIVERY_FT_IDENTICAL = "ftIdenticalAmount";
+export const DELIVERY_FT_RANDOM = "ftRandomAmount";
+export const DELIVERY_NFT = "nft";
 
 // -------------- Setter - Transactions --------------
 // ** Event Series Builder **

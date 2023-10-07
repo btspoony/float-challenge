@@ -5,6 +5,10 @@
     transactionInProgress,
   } from "$flow/stores";
   import { slide } from "svelte/transition";
+
+  function getExplorerURL(txid) {
+    return `https://f.dnz.dev/${txid}`
+  }
 </script>
 
 {#if $transactionInProgress}
@@ -21,7 +25,7 @@
       <span>
         <kbd>Pending</kbd>
         <span class="txId">
-          <a href={`https://flowscan.org/transaction/${$txId}`} target="_blank">
+          <a href={getExplorerURL($txId)} target="_blank">
             {$txId?.slice(0, 8)}...
           </a>
         </span><br />
@@ -35,7 +39,7 @@
       <span>
         <kbd>Finalized</kbd>
         <span class="txId">
-          <a href={`https://flowscan.org/transaction/${$txId}`} target="_blank">
+          <a href={getExplorerURL($txId)} target="_blank">
             {$txId?.slice(0, 8)}...
           </a>
         </span><br />
@@ -48,7 +52,7 @@
       <span>
         <kbd>Executed</kbd>
         <span class="txId">
-          <a href={`https://flowscan.org/transaction/${$txId}`} target="_blank">
+          <a href={getExplorerURL($txId)} target="_blank">
             {$txId?.slice(0, 8)}...
           </a>
         </span><br />
@@ -61,7 +65,7 @@
       <span>
         <kbd>✓ Sealed</kbd>
         <span class="txId">
-          <a href={`https://flowscan.org/transaction/${$txId}`} target="_blank">
+          <a href={getExplorerURL($txId)} target="_blank">
             {$txId?.slice(0, 8)}...
           </a>
         </span><br />
@@ -74,7 +78,7 @@
       <span>
         <kbd>Expired</kbd>
         <span class="txId">
-          <a href={`https://flowscan.org/transaction/${$txId}`} target="_blank">
+          <a href={getExplorerURL($txId)} target="_blank">
             {$txId?.slice(0, 8)}...
           </a>
         </span><br />

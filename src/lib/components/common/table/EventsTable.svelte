@@ -4,7 +4,7 @@
 
   import Table, { Row, Sort } from "./Table.svelte";
   import { sortNumber, sortString } from "./sorting.js";
-  import { formatter } from "$flow/utils";
+  import { formatter, parseIPFSImageURL, getFLOATEventUrl } from "$flow/utils";
   import { page } from "$app/stores";
 
   export let floatEvents;
@@ -67,15 +67,15 @@
         <td data-label="Event">
           <div class="event-block d-flex">
             <div style="margin-right:10px;">
-              <a href="/{$page.params.address}/event/{row.eventId}">
+              <a href="{getFLOATEventUrl($page.params.address, row.eventId)}">
                 <img
                   alt=""
                   class="table-image"
-                  src="https://nftstorage.link/ipfs/{row.image}" />
+                  src="{parseIPFSImageURL(row.image)}" />
               </a>
             </div>
             <div>
-              <a href="/{$page.params.address}/event/{row.eventId}">
+              <a href="{getFLOATEventUrl($page.params.address, row.eventId)}">
                 {row.name}
               </a>
               <div class="event-description">{row.description}</div>
@@ -84,15 +84,6 @@
         </td>
         <td data-label="Created">
           <span>{formatter.format(row.dateCreated * 1000)}</span>
-        </td>
-        <td data-label="Groups">
-          <span
-            >{row.groups.length > 0 ? "" : " - "}
-            {#each row.groups as group}
-              <a href="/{$page.params.address}/group/{group}"
-                ><div class="group-badge small">{group}</div></a>
-            {/each}
-          </span>
         </td>
         <td data-label="Claimed">
           <span>{row.totalSupply}</span>

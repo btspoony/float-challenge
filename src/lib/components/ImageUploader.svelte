@@ -1,6 +1,7 @@
 <script>
-  import { onMount, createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from "svelte";
   import { NFTStorage } from "nft.storage";
+  import { parseIPFSImageURL } from "$flow/utils";
 
   const NFT_STORAGE_TOKEN = import.meta.env.VITE_NFT_STORAGE_ACCESS_TOKEN;
   const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
@@ -22,7 +23,7 @@
     const cid = await client.storeBlob(file);
     uploadedSuccessfully = true;
     uploading = false;
-    imagePreviewSrc = `https://nftstorage.link/ipfs/${cid}`;
+    imagePreviewSrc = parseIPFSImageURL(cid);
 
     dispatch("ipfsAdded", cid);
   };

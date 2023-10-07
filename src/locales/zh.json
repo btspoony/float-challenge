@@ -1,7 +1,7 @@
 {
   "challenges": {
     "list": {
-      "head": "挑战 {extension}",
+      "head": "FLOAT 挑战 {extension}",
       "title": "FLOAT 挑战",
       "filter": "过滤存在奖池的挑战",
       "no-challege": "没有任何 FLOAT 挑战。"

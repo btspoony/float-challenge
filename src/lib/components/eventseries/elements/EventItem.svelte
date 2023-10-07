@@ -1,6 +1,7 @@
 <script>
   import { createEventDispatcher } from "svelte";
   import { resolveAddressObject, getEvent } from "$flow/actions";
+  import { parseIPFSImageURL, getFLOATEventUrl } from '$flow/utils';
   import Badge from "../svgs/badge.svelte";
   import PrimaryTag from "./PrimaryTag.svelte";
 
@@ -68,15 +69,15 @@
           <h3 class="empty unclaimed">Empty<br />Slot</h3>
         {:else}
           <img
-            src="https://nftstorage.link/ipfs/{floatEvent.image}"
+            src="{parseIPFSImageURL(floatEvent.image)}"
             alt="{floatEvent.name} Image"
             class:unclaimed={!preview && !owned}
           />
           <a
             class="no-style"
-            href="/{item.event?.host}/event/{floatEvent.eventId}"
+            href="{getFLOATEventUrl(floatEvent.host, floatEvent.eventId)}"
             target="_blank"
-            data-tooltip="#{floatEvent.eventId} by {item.event?.host}"
+            data-tooltip="{floatEvent.name} by {item.event?.host}"
           >
             <h3 class:unclaimed={!preview && !owned}>{floatEvent.name}</h3>
           </a>

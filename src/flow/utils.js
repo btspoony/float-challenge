@@ -103,3 +103,19 @@ export function signWithClaimCode(claimCode) {
 	const sig = sign(USER_DOMAIN_TAG + data, privateKey);
 	return sig;
 }
+/**
+ * Parse an Image URL
+ * @param {string} url
+ */
+export function parseIPFSImageURL(url) {
+	const urlCheck = url.toLowerCase()
+	if (urlCheck.startsWith("http") || urlCheck.startsWith("data:image")) {
+    return url;
+  } else {
+    return `https://nftstorage.link/ipfs/${url}`;
+  }
+}
+
+export function getFLOATEventUrl(hostAddress, id) {
+	return `https://floats.city/event/${hostAddress}/${id}`;
+}

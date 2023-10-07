@@ -99,6 +99,7 @@
     display: flex;
     justify-content: space-around;
     margin-bottom: 5px;
+    padding-left: 0px;
   }
 
   .tabs li {

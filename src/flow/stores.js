@@ -7,10 +7,6 @@ export const transactionStatus = writable(null);
 export const txId = writable(null);
 export const transactionInProgress = writable(false);
 
-export const setupAccountInProgress = writable(false);
-export const setupAccountStatus = writable(false);
-
-
 /**
 ____ _  _ ____ _  _ ___    ____ ____ ____ _ ____ ____ 
 |___ |  | |___ |\ |  |     [__  |___ |__/ | |___ [__  

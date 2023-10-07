@@ -1,11 +1,11 @@
 <script>
   import { t } from "svelte-i18n";
+  import { formatter, parseIPFSImageURL, getFLOATEventUrl } from "$flow/utils";
+  import { createEventDispatcher } from "svelte";
   //Row component is optional and only serves to render odd/even row, you can use <tr> instead.
   //Sort component is optional
   import Table, { Row, Sort } from "../../common/table/Table.svelte";
   import { sortNumber, sortString } from "../../common/table/sorting.js";
-  import { formatter } from "$flow/utils";
-  import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();
 
@@ -95,19 +95,19 @@
           <div class="event-block d-flex">
             <div style="margin-right:10px;">
               <a
-                href="/{ownerAddress}/event/{row.event.eventId}"
+                href="{getFLOATEventUrl(ownerAddress,row.event.eventId)}"
                 target="_blank"
               >
                 <img
                   alt=""
                   class="table-image"
-                  src="https://nftstorage.link/ipfs/{row.event.image}"
+                  src="{parseIPFSImageURL(row.event.image)}"
                 />
               </a>
             </div>
             <div>
               <a
-                href="/{ownerAddress}/event/{row.event.eventId}"
+                href="{getFLOATEventUrl(ownerAddress,row.event.eventId)}"
                 target="_blank"
               >
                 {row.event.name}
@@ -118,16 +118,6 @@
         </td>
         <td data-label="Created">
           <span>{formatter.format(row.event.dateCreated * 1000)}</span>
-        </td>
-        <td data-label="Groups">
-          <span
-            >{row.event.groups.length > 0 ? "" : " - "}
-            {#each row.event.groups as group}
-              <a href="/{ownerAddress}/group/{group}" target="_blank">
-                <div class="group-badge small">{group}</div>
-              </a>
-            {/each}
-          </span>
         </td>
         <td data-label="Claimed">
           <span>{row.event.totalSupply}</span>

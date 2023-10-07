@@ -1,4 +1,5 @@
 <script>
+  import { parseIPFSImageURL } from "$flow/utils";
   import { t } from "svelte-i18n";
   /** @type {import('../types').EventSeriesData} */
   export let eventSeriesData = {};
@@ -8,7 +9,7 @@
   <div class="card">
     {#if eventSeriesData.basics?.image}
       <img
-        src="https://nftstorage.link/ipfs/{eventSeriesData.basics?.image}"
+        src="{parseIPFSImageURL(eventSeriesData.basics?.image)}"
         alt="{eventSeriesData.basics?.name} Image"
       />
     {/if}

@@ -1,7 +1,7 @@
 {
   "challenges": {
     "list": {
-      "head": "Challenges {extension}",
+      "head": "FLOAT Challenges {extension}",
       "title": "FLOAT Challenges",
       "filter": "Filter Challenges with treasury available",
       "no-challege": "There is no any FLOAT Challenge."
