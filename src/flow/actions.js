@@ -1,6 +1,6 @@
 import { browser } from '$app/env';
 
-import * as fcl from "@onflow/fcl";
+import * as fcl from "@blocto/fcl";
 
 import "./config.js";
 import { addressMap } from "./config.js";

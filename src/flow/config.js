@@ -1,4 +1,4 @@
-import { config } from "@onflow/fcl";
+import { config } from "@blocto/fcl";
 
 export const network = import.meta.env.VITE_FLOW_NETWORK;
 
