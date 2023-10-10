@@ -31,7 +31,7 @@ const fclConfigInfo = {
 config({
   "app.detail.title": dappInfo.title,
   "app.detail.icon": dappInfo.icon,
-  // "app.detail.id": import.meta.env.PUBLIC_BLOCTO_DAPP_ID, // for blocto v2
+  "app.detail.id": import.meta.env.PUBLIC_BLOCTO_DAPP_ID, // for blocto v2
   "flow.network": network,
   "accessNode.api": fclConfigInfo[network].accessNode,
   "discovery.wallet": fclConfigInfo[network].discoveryWallet,
