@@ -19,7 +19,7 @@
 			"aliases": {
 				"emulator": "f8d6e0586b0a20c7",
 				"mainnet": "2d4c3caffbeab845",
-				"testnet": "0afe396ebc8eee65"
+				"testnet": "857dc34d5e1631d3"
 			}
 		},
 		"FLOATVerifiers": {
@@ -27,7 +27,7 @@
 			"aliases": {
 				"emulator": "f8d6e0586b0a20c7",
 				"mainnet": "2d4c3caffbeab845",
-				"testnet": "0afe396ebc8eee65"
+				"testnet": "857dc34d5e1631d3"
 			}
 		},
 		"FLOATIncinerator": {
@@ -35,7 +35,7 @@
 			"aliases": {
 				"emulator": "f8d6e0586b0a20c7",
 				"mainnet": "2d4c3caffbeab845",
-				"testnet": "0afe396ebc8eee65"
+				"testnet": "857dc34d5e1631d3"
 			}
 		},
 		"FindViews": {

@@ -11,6 +11,9 @@ import "Burner"
 
 access(all) contract FLOATEventSeries {
 
+    entitlement Manage;
+    entitlement Owner;
+
     /**    ___  ____ ___ _  _ ____
        *   |__] |__|  |  |__| [__
         *  |    |  |  |  |  | ___]
@@ -400,7 +403,8 @@ access(all) contract FLOATEventSeries {
             treasury.ensureFTEnough(type: self.deliveryTokenType, amount: self.oneShareAmount)
             // ensure type is same
             assert(recipient.getType() == self.deliveryTokenType, message: "Recipient identifier should be same as definition")
-            let treasuryRef: &{FungibleToken.Vault} = treasury.genericFTPool[self.deliveryTokenType] ?? panic("Treasury should have the token")
+            let treasuryRef = treasury.borrowWritableFT(type: self.deliveryTokenType)
+                ?? panic("Treasury should have the token")
 
             // do 'transfer' action
             let ft <- treasuryRef.withdraw(amount: self.oneShareAmount)
@@ -471,7 +475,8 @@ access(all) contract FLOATEventSeries {
 
             // ensure type is same
             assert(recipient.getType() == self.deliveryTokenType, message: "Recipient identifier should be same as definition")
-            let treasuryRef: &{FungibleToken.Provider} = treasury.genericFTPool[self.deliveryTokenType] ?? panic("Treasury should have the token")
+            let treasuryRef = treasury.borrowWritableFT(type: self.deliveryTokenType)
+                ?? panic("Treasury should have the token")
 
             // do 'transfer' action
             let ft <- treasuryRef.withdraw(amount: randShareAmount)
@@ -520,7 +525,7 @@ access(all) contract FLOATEventSeries {
             // ensure enough
             treasury.ensureNFTEnough(type: self.deliveryTokenType, amount: 1)
 
-            let treasuryRef: &{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic} = treasury.genericNFTPool[self.deliveryTokenType]
+            let treasuryRef: &{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic} = treasury.borrowWritableNFT(type: self.deliveryTokenType)
                 ?? panic("Treasury should have the token")
             let ids = treasuryRef.getIDs()
 
@@ -835,11 +840,11 @@ access(all) contract FLOATEventSeries {
     // Treasury public interface
     access(all) resource interface TreasuryPublic {
         // get token types from treasury
-        access(all) fun getTreasuryAssets(isNFT: Bool): [Type]
+        access(all) view fun getTreasuryAssets(isNFT: Bool): [Type]
         // get token balance from the token identifier
-        access(all) fun getTreasuryTokenBalance(type: Type): &{FungibleToken.Balance}?
+        access(all) view fun getTreasuryTokenBalance(type: Type): &{FungibleToken.Balance}?
         // get nft collection public 
-        access(all) fun getTreasuryNFTCollection(type: Type): &{NonFungibleToken.CollectionPublic}?
+        access(all) view fun getTreasuryNFTCollection(type: Type): &{NonFungibleToken.CollectionPublic}?
         // get all strategy information
         access(all) fun getStrategies(states: [StrategyState]?, _ user: &Achievement?): [StrategyQueryResultWithUser]
         // Refresh strategy status
@@ -887,7 +892,7 @@ access(all) contract FLOATEventSeries {
 
         // --- Getters - Public Interfaces ---
 
-        access(all) fun getTreasuryAssets(isNFT: Bool): [Type] {
+        access(all) view fun getTreasuryAssets(isNFT: Bool): [Type] {
             if isNFT {
                 return self.genericNFTPool.keys
             } else {
@@ -895,12 +900,12 @@ access(all) contract FLOATEventSeries {
             }
         }
 
-        access(all) fun getTreasuryTokenBalance(type: Type): &{FungibleToken.Balance}? {
-            return &self.genericFTPool[type] as &{FungibleToken.Balance}?
+        access(all) view fun getTreasuryTokenBalance(type: Type): &{FungibleToken.Balance}? {
+            return &self.genericFTPool[type]
         }
 
-        access(all) fun getTreasuryNFTCollection(type: Type): &{NonFungibleToken.CollectionPublic}? {
-            return &self.genericNFTPool[type] as &{NonFungibleToken.CollectionPublic}?
+        access(all) view fun getTreasuryNFTCollection(type: Type): &{NonFungibleToken.CollectionPublic}? {
+            return &self.genericNFTPool[type]
         }
 
         // get all strategy information
@@ -1021,7 +1026,7 @@ access(all) contract FLOATEventSeries {
         // --- Setters - Private Interfaces ---
 
         // update DropReceiver
-        access(all) fun updateDropReceiver(receiver: Address) {
+        access(Manage) fun updateDropReceiver(receiver: Address) {
             self.receiver = receiver
 
             emit FLOATEventSeriesTreasuryUpdateDropReceiver(
@@ -1032,7 +1037,7 @@ access(all) contract FLOATEventSeries {
         }
 
         // drop all treasury, if no strategy alive
-        access(all) fun dropTreasury() {
+        access(Manage) fun dropTreasury() {
             assert(
                 self.strategies.length == self.getStrategies(states: [StrategyState.closed], nil).length,
                 message: "All strategies should be closed"
@@ -1065,7 +1070,7 @@ access(all) contract FLOATEventSeries {
         }
 
         // deposit ft to treasury
-        access(all) fun depositFungibleToken(from: @{FungibleToken.Vault}) {
+        access(Manage) fun depositFungibleToken(from: @{FungibleToken.Vault}) {
             let fromType = from.getType()
             let tokenInfo = FLOATEventSeries.getTokenDefinition(fromType)
                 ?? panic("This token is not defined.")
@@ -1089,7 +1094,7 @@ access(all) contract FLOATEventSeries {
         }
 
         // deposit nft to treasury
-        access(all) fun depositNonFungibleTokens(nfts: @[{NonFungibleToken.NFT}]) {
+        access(Manage) fun depositNonFungibleTokens(nfts: @[{NonFungibleToken.NFT}]) {
             assert(nfts.length > 0, message: "Empty collection.")
 
             let nftType = (&nfts[0] as &{NonFungibleToken.NFT}).getType()
@@ -1125,7 +1130,7 @@ access(all) contract FLOATEventSeries {
         }
 
         // add a new strategy
-        access(all) fun addStrategy(strategy: @{ITreasuryStrategy}, autoStart: Bool) {
+        access(Manage) fun addStrategy(strategy: @{ITreasuryStrategy}, autoStart: Bool) {
             let id = strategy.getType().identifier
 
             // get rest required values
@@ -1185,7 +1190,7 @@ access(all) contract FLOATEventSeries {
         }
 
         // go next strategy stage
-        access(all) fun nextStrategyStage(idx: Int, _ forceClose: Bool): StrategyState {
+        access(Manage) fun nextStrategyStage(idx: Int, _ forceClose: Bool): StrategyState {
             let strategy = self.borrowStrategyRef(idx: idx)
             var nextState: StrategyState = StrategyState.opening
 
@@ -1218,12 +1223,22 @@ access(all) contract FLOATEventSeries {
 
         // --- Setters - Contract Only ---
 
+        // borrow writable FT
+        access(contract) fun borrowWritableFT(type: Type): auth(FungibleToken.Withdraw) &{FungibleToken.Vault}? {
+            return &self.genericFTPool[type]
+        }
+
+        // borrow writable NFT
+        access(contract) fun borrowWritableNFT(type: Type): auth(NonFungibleToken.Withdraw) &{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}? {
+            return &self.genericNFTPool[type]
+        }
+
         // borrow strategy reference
         access(contract) fun borrowStrategyRef(idx: Int): &{ITreasuryStrategy} {
             pre {
                 idx >= 0 && idx < self.strategies.length: "Strategy does not exist."
             }
-            return &self.strategies[idx] as &{ITreasuryStrategy}
+            return &self.strategies[idx]
         }
 
         // borrow strategies by state reference
@@ -1447,11 +1462,11 @@ access(all) contract FLOATEventSeries {
         // --- Setters - Private Interfaces ---
 
         // borrow the treasury private reference
-        access(all) fun borrowTreasury(): &Treasury {
-            return &self.treasury as &Treasury
+        access(Manage) fun borrowTreasury(): auth(Manage) &Treasury {
+            return &self.treasury
         }
 
-        access(all) fun updateBasics(name: String, description: String, image: String) {
+        access(Manage) fun updateBasics(name: String, description: String, image: String) {
             self.name = name
             self.description = description
             self.image = image
@@ -1465,7 +1480,7 @@ access(all) contract FLOATEventSeries {
             )
         }
 
-        access(all) fun updateSlotData(idx: Int, identifier: EventIdentifier) {
+        access(Manage) fun updateSlotData(idx: Int, identifier: EventIdentifier) {
             pre {
                 idx < self.slots.length: "The idx is out of Slots size."
             }
@@ -1486,7 +1501,7 @@ access(all) contract FLOATEventSeries {
             )
         }
 
-        access(all) fun addAchievementGoal(goal: {IAchievementGoal}) {
+        access(Manage) fun addAchievementGoal(goal: {IAchievementGoal}) {
             self.goals.append(goal)
 
             let global = FLOATEventSeries.borrowEventSeriesGlobal()
@@ -1501,7 +1516,7 @@ access(all) contract FLOATEventSeries {
         }
 
         // sync eventseries related certificate FLOATs
-        access(all) fun syncCertificates(events: [EventIdentifier]) {
+        access(Manage) fun syncCertificates(events: [EventIdentifier]) {
             pre {
                 events.length > 0: "Length of events should not be zero."
             }
@@ -1607,7 +1622,7 @@ access(all) contract FLOATEventSeries {
 
         // --- Setters - Private Interfaces ---
 
-        access(all) fun createEventSeries(
+        access(Manage) fun createEventSeries(
             name: String,
             description: String,
             image: String,
@@ -1640,7 +1655,7 @@ access(all) contract FLOATEventSeries {
             return seriesId
         }
 
-        access(all) fun revokeEventSeries(seriesId: UInt64) {
+        access(Manage) fun revokeEventSeries(seriesId: UInt64) {
             // drop treasury first
             let seriesRef = (&self.series[seriesId] as &EventSeries?) ?? panic("The event series does not exist")
             let treasury = seriesRef.borrowTreasury()
@@ -1656,14 +1671,14 @@ access(all) contract FLOATEventSeries {
             emit FLOATEventSeriesRevoked(seriesId: seriesId, host: host)
         }
 
-        access(all) fun recoverEventSeries(seriesId: UInt64) {
+        access(Manage) fun recoverEventSeries(seriesId: UInt64) {
             let one <- self.revoked.remove(key: seriesId) ?? panic("The event series does not exist")
             self.series[seriesId] <-! one
 
             emit FLOATEventSeriesRecovered(seriesId: seriesId, host: self.owner!.address)
         }
 
-        access(all) fun registerToken(path: PublicPath, isNFT: Bool) {
+        access(Manage) fun registerToken(path: PublicPath, isNFT: Bool) {
             // register token from owner's capability
             if isNFT {
                 let collection = self.owner!
@@ -1683,7 +1698,7 @@ access(all) contract FLOATEventSeries {
         }
 
         // create the controller resource
-        access(all) fun createStrategyController(
+        access(Manage) fun createStrategyController(
             consumable: Bool,
             threshold: UInt64,
             delivery: {StrategyDelivery}
@@ -1898,7 +1913,7 @@ access(all) contract FLOATEventSeries {
         // --- Setters - Private Interfaces ---
 
         // Achieve the goal and add to score
-        access(all) fun accomplishGoal(goalIdx: Int) {
+        access(Owner) fun accomplishGoal(goalIdx: Int) {
             pre {
                 !self.finishedGoals.contains(goalIdx): "The goal is already accomplished."
             }
@@ -1985,7 +2000,7 @@ access(all) contract FLOATEventSeries {
         // --- Setters - Private Interfaces ---
 
         // create achievement by host and id
-        access(all) fun createAchievementRecord(host: Address, seriesId: UInt64): EventSeriesIdentifier {
+        access(Owner) fun createAchievementRecord(host: Address, seriesId: UInt64): EventSeriesIdentifier {
             let identifier = EventSeriesIdentifier(host, seriesId)
             let key = identifier.toString()
 
@@ -2005,7 +2020,7 @@ access(all) contract FLOATEventSeries {
             return identifier
         }
 
-        access(all) fun borrowAchievementRecordWritable(host: Address, seriesId: UInt64): &Achievement? {
+        access(Owner) fun borrowAchievementRecordWritable(host: Address, seriesId: UInt64): auth(Owner) &Achievement? {
             let target = EventSeriesIdentifier(host, seriesId)
             let key = target.toString()
             return &self.achievements[key]
