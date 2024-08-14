@@ -11,8 +11,8 @@ import "Burner"
 
 access(all) contract FLOATEventSeries {
 
-    entitlement Manage;
-    entitlement Owner;
+    access(all) entitlement Manage;
+    access(all) entitlement Owner;
 
     /**    ___  ____ ___ _  _ ____
        *   |__] |__|  |  |__| [__
@@ -525,7 +525,7 @@ access(all) contract FLOATEventSeries {
             // ensure enough
             treasury.ensureNFTEnough(type: self.deliveryTokenType, amount: 1)
 
-            let treasuryRef: &{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic} = treasury.borrowWritableNFT(type: self.deliveryTokenType)
+            let treasuryRef = treasury.borrowWritableNFT(type: self.deliveryTokenType)
                 ?? panic("Treasury should have the token")
             let ids = treasuryRef.getIDs()
 
@@ -1054,7 +1054,8 @@ access(all) contract FLOATEventSeries {
             for identifier in self.genericNFTPool.keys {
                 let recipient = TokenRecipient(self.receiver, identifier)
                 let receiverCollection = recipient.getNFTCollectionPublic()
-                let collection = (&self.genericNFTPool[identifier] as &{NonFungibleToken.Provider, NonFungibleToken.CollectionPublic}?)!
+                let collection = self.borrowWritableNFT(type: identifier)
+                    ?? panic("Treasury should have the token")
                 let keys = collection.getIDs()
                 for id in keys {
                     receiverCollection.deposit(token: <- collection.withdraw(withdrawID: id))
@@ -1657,7 +1658,7 @@ access(all) contract FLOATEventSeries {
 
         access(Manage) fun revokeEventSeries(seriesId: UInt64) {
             // drop treasury first
-            let seriesRef = (&self.series[seriesId] as &EventSeries?) ?? panic("The event series does not exist")
+            let seriesRef = (&self.series[seriesId] as auth(Manage) &EventSeries?) ?? panic("The event series does not exist")
             let treasury = seriesRef.borrowTreasury()
             treasury.dropTreasury()
 
