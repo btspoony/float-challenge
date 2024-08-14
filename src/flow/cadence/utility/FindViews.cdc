@@ -61,7 +61,7 @@ access(all) contract FindViews {
         access(all) let receiverType: Type
         access(all) let balanceType: Type
         access(all) let providerType: Type
-        access(all) let createEmptyVault: ((): @FungibleToken.Vault)
+        access(all) let createEmptyVault: ((): @{FungibleToken.Vault})
 
         init(
             tokenAlias: String,
@@ -73,7 +73,7 @@ access(all) contract FindViews {
             receiverType: Type,
             balanceType: Type,
             providerType: Type,
-            createEmptyVault: ((): @FungibleToken.Vault)
+            createEmptyVault: ((): @{FungibleToken.Vault})
         ) {
             pre {
                 receiverType.isSubtype(of: Type<&{FungibleToken.Receiver}>()): "Receiver type must include FungibleToken.Receiver interfaces."

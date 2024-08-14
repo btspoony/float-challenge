@@ -3,21 +3,21 @@
 import "FLOAT"
 import "FLOATEventSeries"
 
-pub contract FLOATChallengeVerifiers {
+access(all) contract FLOATChallengeVerifiers {
     //
     // ChallengeAchievementPoint
     // 
     // Specifies a FLOAT Challenge to limit who accomplished 
     // a number of achievement point can claim the FLOAT
-    pub struct ChallengeAchievementPoint: FLOAT.IVerifier {
-        pub let challengeIdentifier: FLOATEventSeries.EventSeriesIdentifier
-        pub let challengeThresholdPoints: UInt64
+    access(all) struct ChallengeAchievementPoint: FLOAT.IVerifier {
+        access(all) let challengeIdentifier: FLOATEventSeries.EventSeriesIdentifier
+        access(all) let challengeThresholdPoints: UInt64
 
-        pub fun verify(_ params: {String: AnyStruct}) {
+        access(account) fun verify(_ params: {String: AnyStruct}) {
             let claimee: Address = params["claimee"]! as! Address
             if let achievementBoard = getAccount(claimee)
-                .getCapability(FLOATEventSeries.FLOATAchievementBoardPublicPath)
-                .borrow<&FLOATEventSeries.AchievementBoard{FLOATEventSeries.AchievementBoardPublic}>()
+                .capabilities
+                .borrow<&FLOATEventSeries.AchievementBoard>(FLOATEventSeries.FLOATAchievementBoardPublicPath)
             {
                 // build goal status by different ways
                 if let record = achievementBoard.borrowAchievementRecordRef(

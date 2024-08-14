@@ -1,37 +1,37 @@
 import "FLOATEventSeries"
 
-pub contract FLOATTreasuryStrategies {
+access(all) contract FLOATTreasuryStrategies {
 
     /**    ____ _  _ ____ _  _ ___ ____
        *   |___ |  | |___ |\ |  |  [__
         *  |___  \/  |___ | \|  |  ___]
          ******************************/
 
-    pub event FLOATStrategyGoalAccomplished(strategyIdentifier: String, strategyUuid: UInt64, user: Address)
-    pub event FLOATStrategyLotteryDrawn(strategyIdentifier: String, winners: [Address])
+    access(all) event FLOATStrategyGoalAccomplished(strategyIdentifier: String, strategyUuid: UInt64, user: Address)
+    access(all) event FLOATStrategyLotteryDrawn(strategyIdentifier: String, winners: [Address])
 
     /**    ____ _  _ _  _ ____ ___ _ ____ _  _ ____ _    _ ___ _   _
        *   |___ |  | |\ | |     |  | |  | |\ | |__| |    |  |   \_/
         *  |    |__| | \| |___  |  | |__| | \| |  | |___ |  |    |
          ***********************************************************/
 
-    pub enum StrategyType: UInt8 {
-        pub case Lottery
-        pub case ClaimingQueue
+    access(all) enum StrategyType: UInt8 {
+        access(all) case Lottery
+        access(all) case ClaimingQueue
     }
 
     // Strategy parameter
-    pub struct LotteryDetail {
+    access(all) struct LotteryDetail {
         // minimium valid users reached
-        pub let minimiumValid: UInt64
+        access(all) let minimiumValid: UInt64
         // datetimes ending to limit
-        pub let ending: {FLOATEventSeries.StrategyState: UFix64}
+        access(all) let ending: {FLOATEventSeries.StrategyState: UFix64}
         // valid users to do a lottery
-        pub let valid: [Address]
+        access(all) let valid: [Address]
         // lottery winners
-        pub let winners: [Address]
+        access(all) let winners: [Address]
 
-        init(
+        view init(
             _ minValid: UInt64,
             _ ending: {FLOATEventSeries.StrategyState: UFix64},
             _ valid: [Address],
@@ -45,7 +45,7 @@ pub contract FLOATTreasuryStrategies {
     }
 
     // distrute reward by Lottery
-    pub resource LotteryStrategy: FLOATEventSeries.ITreasuryStrategy {
+    access(all) resource LotteryStrategy: FLOATEventSeries.ITreasuryStrategy {
         // strategy general controller
         access(account) let controller: @FLOATEventSeries.StrategyController
         access(self) let params: {String: AnyStruct}
@@ -77,12 +77,8 @@ pub contract FLOATTreasuryStrategies {
             self.winners = []
         }
 
-        destroy() {
-            destroy self.controller
-        }
-
         // Fetch detail of the strategy
-        pub fun getStrategyDetail(): LotteryDetail {
+        access(all) fun getStrategyDetail(): LotteryDetail {
             return LotteryDetail(self.minimiumValid, self.ending, self.valid, self.winners)
         }
 
@@ -103,8 +99,7 @@ pub contract FLOATTreasuryStrategies {
             // draw a lottery to pick winners
             var amt: UInt64 = 0
             while amt < winnerAmount {
-                let rand = unsafeRandom()
-                let pickedIndex = rand % UInt64(self.valid.length)
+                let pickedIndex = revertibleRandom<UInt64>(modulo: UInt64(self.valid.length))
                 let pickedAddress = self.valid[pickedIndex]
                 if !self.winners.contains(pickedAddress) {
                     // remove from valid
@@ -123,13 +118,13 @@ pub contract FLOATTreasuryStrategies {
 
         // ---------- opening Stage ----------
 
-        access(account) fun isEligible (user: &FLOATEventSeries.Achievement{FLOATEventSeries.AchievementPublic}): Bool {
+        access(account) fun isEligible (user: &FLOATEventSeries.Achievement): Bool {
             let address = user.getOwner()
             return self.valid.contains(address) || self.winners.contains(address)
         }
 
         // update user's achievement
-        access(account) fun onGoalAccomplished(user: &FLOATEventSeries.Achievement{FLOATEventSeries.AchievementPublic}) {
+        access(account) fun onGoalAccomplished(user: &FLOATEventSeries.Achievement) {
             var isValid = false
             let now = getCurrentBlock().timestamp
             // user should accomplish goals before opening ending
@@ -159,7 +154,7 @@ pub contract FLOATTreasuryStrategies {
         // ---------- claimable Stage ----------
 
         // verify if the user match the strategy
-        access(account) fun verifyClaimable(user: &FLOATEventSeries.Achievement{FLOATEventSeries.AchievementPublic}): Bool {
+        access(account) fun verifyClaimable(user: &FLOATEventSeries.Achievement): Bool {
             let now = getCurrentBlock().timestamp
             assert(now <= (self.ending[FLOATEventSeries.StrategyState.claimable] ?? now), message: "Sorry! The claimable ending time is ran out.")
 
@@ -168,11 +163,11 @@ pub contract FLOATTreasuryStrategies {
     }
     
     // Strategy parameter
-    pub struct ClaimingQueueDetail {
+    access(all) struct ClaimingQueueDetail {
         // datetimes ending to limit
-        pub let ending: {FLOATEventSeries.StrategyState: UFix64}
+        access(all) let ending: {FLOATEventSeries.StrategyState: UFix64}
         
-        init(
+        view init(
             _ ending: {FLOATEventSeries.StrategyState: UFix64}
         ) {
             self.ending = ending
@@ -180,7 +175,7 @@ pub contract FLOATTreasuryStrategies {
     }
 
     // distrute reward by queue
-    pub resource ClaimingQueueStrategy: FLOATEventSeries.ITreasuryStrategy {
+    access(all) resource ClaimingQueueStrategy: FLOATEventSeries.ITreasuryStrategy {
         // strategy general controller
         access(account) let controller: @FLOATEventSeries.StrategyController
         access(self) let params: {String: AnyStruct}
@@ -198,12 +193,8 @@ pub contract FLOATTreasuryStrategies {
             self.ending = FLOATTreasuryStrategies.parseStrategyTime(params)
         }
 
-        destroy() {
-            destroy self.controller
-        }
-
         // Fetch detail of the strategy
-        pub fun getStrategyDetail(): ClaimingQueueDetail {
+        access(all) fun getStrategyDetail(): ClaimingQueueDetail {
             return ClaimingQueueDetail(self.ending)
         }
 
@@ -214,18 +205,18 @@ pub contract FLOATTreasuryStrategies {
 
         // ---------- opening Stage ----------
 
-        access(account) fun isEligible (user: &FLOATEventSeries.Achievement{FLOATEventSeries.AchievementPublic}): Bool {
+        access(account) fun isEligible (user: &FLOATEventSeries.Achievement): Bool {
             return true
         }
 
         // update user's achievement
-        access(account) fun onGoalAccomplished(user: &FLOATEventSeries.Achievement{FLOATEventSeries.AchievementPublic}) {
+        access(account) fun onGoalAccomplished(user: &FLOATEventSeries.Achievement) {
             // NOTHING
         }
         // ---------- claimable Stage ----------
 
         // verify if the user match the strategy
-        access(account) fun verifyClaimable(user: &FLOATEventSeries.Achievement{FLOATEventSeries.AchievementPublic}): Bool {
+        access(account) fun verifyClaimable(user: &FLOATEventSeries.Achievement): Bool {
             let now = getCurrentBlock().timestamp
             assert(now <= (self.ending[FLOATEventSeries.StrategyState.claimable] ?? now), message: "Sorry! The claimable ending time is ran out.")
 
@@ -254,7 +245,7 @@ pub contract FLOATTreasuryStrategies {
     }
 
     // Strategy factory method
-    pub fun createStrategy(
+    access(all) fun createStrategy(
         type: StrategyType,
         controller: @FLOATEventSeries.StrategyController,
         params: {String: AnyStruct}

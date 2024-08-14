@@ -1,12 +1,13 @@
 import "FLOATEventSeries"
 import "MetadataViews"
+import "ViewResolver"
 
-pub contract FLOATEventSeriesViews {
+access(all) contract FLOATEventSeriesViews {
 
   // EventSeries Slot information
-  pub struct SeriesSlotInfo {
-    pub let event: FLOATEventSeries.EventIdentifier?
-    pub let required: Bool
+  access(all) struct SeriesSlotInfo {
+    access(all) let event: FLOATEventSeries.EventIdentifier?
+    access(all) let required: Bool
 
     init(
       _ identifier: FLOATEventSeries.EventIdentifier?,
@@ -18,17 +19,17 @@ pub contract FLOATEventSeriesViews {
   }
 
   // EventSeries Metadata
-  pub struct EventSeriesMetadata {
-    pub let host: Address
-    pub let id: UInt64
-    pub let sequence: UInt64
-    pub let display: MetadataViews.Display?
-    pub let slots: [SeriesSlotInfo]
-    pub let extra: {String: AnyStruct}
+  access(all) struct EventSeriesMetadata {
+    access(all) let host: Address
+    access(all) let id: UInt64
+    access(all) let sequence: UInt64
+    access(all) let display: MetadataViews.Display?
+    access(all) let slots: [SeriesSlotInfo]
+    access(all) let extra: {String: AnyStruct}
 
     init(
-      _ eventSeries: &FLOATEventSeries.EventSeries{FLOATEventSeries.EventSeriesPublic},
-      _ resolver: &{MetadataViews.Resolver},
+      _ eventSeries: &FLOATEventSeries.EventSeries,
+      _ resolver: &{ViewResolver.Resolver},
     ) {
       self.host = eventSeries.owner!.address
       self.id = eventSeries.uuid
@@ -48,9 +49,9 @@ pub contract FLOATEventSeriesViews {
   }
 
   // Treasury return data
-  pub struct TreasuryData {
-    pub let tokenBalances: {String: UFix64}
-    pub let collectionIDs: {String: [UInt64]}
+  access(all) struct TreasuryData {
+    access(all) let tokenBalances: {String: UFix64}
+    access(all) let collectionIDs: {String: [UInt64]}
 
     init(balances: {String: UFix64}, ids: {String: [UInt64]}) {
       self.tokenBalances = balances

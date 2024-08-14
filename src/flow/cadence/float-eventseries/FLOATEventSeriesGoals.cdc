@@ -1,22 +1,22 @@
 import "FLOAT"
 import "FLOATEventSeries"
 
-pub contract FLOATEventSeriesGoals {
+access(all) contract FLOATEventSeriesGoals {
     /**    ____ _  _ _  _ ____ ___ _ ____ _  _ ____ _    _ ___ _   _
        *   |___ |  | |\ | |     |  | |  | |\ | |__| |    |  |   \_/
         *  |    |__| | \| |___  |  | |__| | \| |  | |___ |  |    |
          ***********************************************************/
 
     // Accomplish goal when a certain amount is collected
-    pub struct CollectByAmountGoal: FLOATEventSeries.IAchievementGoal {
+    access(all) struct CollectByAmountGoal: FLOATEventSeries.IAchievementGoal {
         // achievement title
-        pub let title: String
+        access(all) let title: String
         // variables
         access(self) let points: UInt64
         access(self) let amount: UInt64
         access(self) let requiredAmount: UInt64
 
-        init(
+        view init(
             points: UInt64,
             amount: UInt64,
             requiredAmount: UInt64?,
@@ -32,9 +32,9 @@ pub contract FLOATEventSeriesGoals {
             self.title = title ?? ""
         }
 
-        pub fun getPoints(): UInt64 { return self.points }
+        access(all) view fun getPoints(): UInt64 { return self.points }
 
-        pub fun getGoalDetail(): {String: AnyStruct} {
+        access(all) view fun getGoalDetail(): {String: AnyStruct} {
             let ret: {String: UInt64} = {}
             ret["amount"] = self.amount
             ret["requiredAmount"] = self.requiredAmount
@@ -42,7 +42,7 @@ pub contract FLOATEventSeriesGoals {
         }
 
         // Check if user fits some criteria.
-        access(account) fun verify(_ eventSeries: &FLOATEventSeries.EventSeries{FLOATEventSeries.EventSeriesPublic}, user: Address): Bool {
+        access(account) fun verify(_ eventSeries: &FLOATEventSeries.EventSeries, user: Address): Bool {
             var claimedTotal: UInt64 = 0
             var claimedRequired: UInt64 = 0
 
@@ -67,14 +67,14 @@ pub contract FLOATEventSeriesGoals {
     }
     
     // Accomplish goal when a certain percent is collected
-    pub struct CollectByPercentGoal: FLOATEventSeries.IAchievementGoal {
+    access(all) struct CollectByPercentGoal: FLOATEventSeries.IAchievementGoal {
         // achievement title
-        pub let title: String
+        access(all) let title: String
         // variables
         access(self) let points: UInt64
         access(self) let percent: UFix64
 
-        init(
+        view init(
             points: UInt64,
             percentToCollect: UFix64,
             title: String?
@@ -85,16 +85,16 @@ pub contract FLOATEventSeriesGoals {
             self.title = title ?? ""
         }
 
-        pub fun getPoints(): UInt64 { return self.points }
+        access(all) view fun getPoints(): UInt64 { return self.points }
 
-        pub fun getGoalDetail(): {String: AnyStruct} {
+        access(all) view fun getGoalDetail(): {String: AnyStruct} {
             let ret: {String: UFix64} = {}
             ret["percent"] = self.percent
             return ret
         }
 
         // Check if user fits some criteria.
-        access(account) fun verify(_ eventSeries: &FLOATEventSeries.EventSeries{FLOATEventSeries.EventSeriesPublic}, user: Address): Bool {
+        access(account) fun verify(_ eventSeries: &FLOATEventSeries.EventSeries, user: Address): Bool {
             var claimedTotal: UFix64 = 0.0
             var slotTotal: UFix64 = 0.0
 
@@ -116,14 +116,14 @@ pub contract FLOATEventSeriesGoals {
     }
  
     // Accomplish goal when some FLOATs are collected
-    pub struct CollectSpecificFLOATsGoal: FLOATEventSeries.IAchievementGoal {
+    access(all) struct CollectSpecificFLOATsGoal: FLOATEventSeries.IAchievementGoal {
         // achievement title
-        pub let title: String
+        access(all) let title: String
         // variables
         access(self) let points: UInt64
         access(self) let floats: [FLOATEventSeries.EventIdentifier]
 
-        init(
+        view init(
             points: UInt64,
             floats: [FLOATEventSeries.EventIdentifier],
             title: String?
@@ -134,16 +134,16 @@ pub contract FLOATEventSeriesGoals {
             self.title = title ?? ""
         }
 
-        pub fun getPoints(): UInt64 { return self.points }
+        access(all) view fun getPoints(): UInt64 { return self.points }
 
-        pub fun getGoalDetail(): {String: AnyStruct} {
+        access(all) view fun getGoalDetail(): {String: AnyStruct} {
             let ret: {String: [FLOATEventSeries.EventIdentifier]} = {}
             ret["floats"] = self.floats
             return ret
         } 
 
         // Check if user fits some criteria.
-        access(account) fun verify(_ eventSeries: &FLOATEventSeries.EventSeries{FLOATEventSeries.EventSeriesPublic}, user: Address): Bool {
+        access(account) fun verify(_ eventSeries: &FLOATEventSeries.EventSeries, user: Address): Bool {
             let requiredIDs: [String] = []
             for requiredFloat in self.floats {
                 requiredIDs.append(requiredFloat.toString())
@@ -171,10 +171,10 @@ pub contract FLOATEventSeriesGoals {
     // ------------- Utility Method -------------
 
     // get user FLOAT collection
-    access(contract) fun getFLOATCollection(user: Address): &FLOAT.Collection{FLOAT.CollectionPublic}? {
+    access(contract) fun getFLOATCollection(user: Address): &FLOAT.Collection? {
         return getAccount(user)
-            .getCapability(FLOAT.FLOATCollectionPublicPath)
-            .borrow<&FLOAT.Collection{FLOAT.CollectionPublic}>()
+            .capabilities
+            .borrow<&FLOAT.Collection>(FLOAT.FLOATCollectionPublicPath)
     }
 
     // to check if owned some FLOAT of a Event
@@ -189,21 +189,21 @@ pub contract FLOATEventSeriesGoals {
 
     // ------------- Display Struct -------------
 
-    pub enum GoalStatus: UInt8 {
-        pub case todo
-        pub case ready
-        pub case accomplished
+    access(all) enum GoalStatus: UInt8 {
+        access(all) case todo
+        access(all) case ready
+        access(all) case accomplished
     }
 
     // Goal Status for display
-    pub struct GoalStatusDisplay {
+    access(all) struct GoalStatusDisplay {
         // user status
-        pub let status: GoalStatus
+        access(all) let status: GoalStatus
         // info 
-        pub let identifer: String
-        pub let title: String
-        pub let points: UInt64
-        pub let detail: {String: AnyStruct}
+        access(all) let identifer: String
+        access(all) let title: String
+        access(all) let points: UInt64
+        access(all) let detail: {String: AnyStruct}
 
         init(
             status: GoalStatus,

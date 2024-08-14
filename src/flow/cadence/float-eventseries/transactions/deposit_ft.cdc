@@ -13,7 +13,7 @@ transaction(
   let fungibleTokenPublicPath: PublicPath
   let fungibleTokenReciever: &{FungibleToken.Receiver}
 
-  let fungibleTokenToDeposit: @FungibleToken.Vault
+  let fungibleTokenToDeposit: @{FungibleToken.Vault}
 
   prepare(acct: AuthAccount) {
     // SETUP Event Series builder resource, link public and private
